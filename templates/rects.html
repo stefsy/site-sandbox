@@ -9,7 +9,7 @@
 
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
-    var nCols = 10;
+    var nCols = 16;
     var color = d3.scale.category20();
 
 	var initData = [];
@@ -20,7 +20,7 @@
 	var chart = d3.selectAll(".box").append("svg")
 		    .attr("class", "chart")
 		    .attr("width", "100%")
-		    .attr("height", 20 * data1.length);
+		    .attr("height", 20 * initData.length);
 
 	var x = d3.scale.linear()
 		.domain([0,d3.max(initData)])
@@ -33,7 +33,7 @@
 			.attr("y", function(d,i) { return i*20; })
      		.attr("width",x)
      		.attr("height",20)
-            .style("fill", "steelblue");
+            .style("fill", function(d,i) { return color(i);} );
 
 
 //black line on y-axis 
