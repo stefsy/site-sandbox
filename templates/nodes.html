@@ -10,7 +10,6 @@
     <div class = "tooltip"></div>
 </div> 
 
-<script src="http://d3js.org/d3.v3.js"></script>
 <script>
 //create chart space
 
@@ -46,10 +45,10 @@ d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
     force.stop();
 
     // Center the nodes in the middle.
-    // var ox = 0, oy = 0;
-    // data.nodes.forEach(function(d) { ox += d.x, oy += d.y; });
-    // ox = ox / n - width / 2, oy = oy / n - height / 2;
-    // data.nodes.forEach(function(d) { d.x -= ox, d.y -= oy; });
+    var ox = 0, oy = 0;
+    data.nodes.forEach(function(d) { ox += d.x, oy += d.y; });
+    ox = ox / n - width / 2, oy = oy / n - height / 2;
+    data.nodes.forEach(function(d) { d.x -= ox, d.y -= oy; });
 
 
     //draw the action links and nodes
@@ -71,7 +70,7 @@ d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
         .attr("r", 8)
         .style("fill", function(d) { return color(d.group); })
         .call(force.drag);
-
+ 
     //change the attributes of pre-existing elements
     var tooltips = svg.selectAll(".node")    
         .on("mouseover", function(d,i) {
@@ -79,7 +78,7 @@ d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
                 .attr("r", 12);
             d3.select(".tooltip")
                 .style("left",d.x - 60/2 +"px")
-                .style("top",d.y - 25 +"px")
+                .style("top",d.y - 30 +"px")
                 .html(d.name + " " + d.group)
                 .style("display","inline");
         })      
