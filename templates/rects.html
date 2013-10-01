@@ -1,0 +1,73 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<h1>d3 Sandbox</h1>
+<p> playing around with updatable bar charts. data loaded from w/in script</p>
+	
+<button>Update</button> 
+<div class = "box"> </div>
+
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+    var nCols = 10;
+    var color = d3.scale.category20();
+
+	var initData = [];
+    for(var i=0; i<nCols;i++){
+            initData.push(Math.floor(Math.random()*50)+1);
+        };
+
+	var chart = d3.selectAll(".box").append("svg")
+		    .attr("class", "chart")
+		    .attr("width", "100%")
+		    .attr("height", 20 * data1.length);
+
+	var x = d3.scale.linear()
+		.domain([0,d3.max(initData)])
+		.range([0,420]);
+
+
+	chart.selectAll("rect")
+		.data(initData)
+		.enter().append("rect")	
+			.attr("y", function(d,i) { return i*20; })
+     		.attr("width",x)
+     		.attr("height",20)
+            .style("fill", "steelblue");
+
+
+//black line on y-axis 
+    chart.append("line")
+    	.attr("y1",0)
+    	.attr("y2", 120)
+    	.style("stroke", "#000")
+
+    d3.selectAll("button").on("click", function() {
+
+        //generate new array of 5 numbers between 1 and 50
+        var newData = [];
+        for(var i=0; i<nCols;i++){
+            newData.push(Math.floor(Math.random()*50)+1);
+        };
+
+    	var up = d3.selectAll("rect")
+    				.data(newData); 
+
+    	up.transition()
+    		.duration(1000)
+    		.attr("width", x);
+
+    	up.enter().append("rect")
+			.attr("y", function(d,i) { return i*20; })
+     		.attr("width",x)
+     		.attr("height",20);
+
+     	up.exit().remove(); 
+
+     	d3.selectAll(".chart").attr("height", 20*data2.length);
+
+  	});
+
+</script>
+
+{% endblock %}

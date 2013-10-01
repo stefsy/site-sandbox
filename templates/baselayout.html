@@ -1,0 +1,18 @@
+<!doctype html>
+
+<!-- base layout class that other html layouts will inherit from -->
+
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='stylesheet.css') }}">
+<script type='text/javascript' src="{{ url_for('static', filename='jquery.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='custom.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='d3v3.js') }}"></script>
+
+<div class=page>
+	{% for message in get_flashed_messages() %}
+		<div class=flash> {{ message }} </div>
+	{% endfor %}
+	<!-- here is where the child templates will extend from -->
+	{% block body %} 
+
+	{% endblock %}
+</div>

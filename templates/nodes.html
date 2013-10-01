@@ -1,0 +1,97 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<h1>d3 Sandbox</h1>
+<p>force directed node graph. 
+    data loaded from json. 
+    yay mbostock tutorials</p>
+
+<div class = "frame">
+    <div class = "tooltip"></div>
+</div> 
+
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+//create chart space
+
+var width = 900; 
+var height = 500; 
+var color = d3.scale.category20();                
+
+var svg = d3.selectAll(".frame").append("svg")
+                .attr("width",width)
+                .attr("height",height);
+
+//defines the force graph, change charge and linkDistance 
+var force = d3.layout.force()
+                .charge(-400)
+                .linkDistance(75)
+                .size([width,height]); 
+
+//define data
+d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
+    var n = data.nodes.length;
+
+    force.nodes(data.nodes).links(data.links);
+
+    // Initialize the positions deterministically, for better results.
+    data.nodes.forEach(function(d, i) { d.x = d.y = width / n * i; });
+
+    // Run the layout a fixed number of times.
+    // where i is the number of times the layout runs
+    //really interesting read up on this. behavior changes a lot from i=0
+    //to i = 100 asymptotically?  
+    force.start();
+    for (var i = n*100; i > 0; --i) force.tick();
+    force.stop();
+
+    // Center the nodes in the middle.
+    // var ox = 0, oy = 0;
+    // data.nodes.forEach(function(d) { ox += d.x, oy += d.y; });
+    // ox = ox / n - width / 2, oy = oy / n - height / 2;
+    // data.nodes.forEach(function(d) { d.x -= ox, d.y -= oy; });
+
+
+    //draw the action links and nodes
+    var link = svg.selectAll(".link")
+        .data(data.links)
+      .enter().append("line")
+        .attr("class", "link")
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    var node = svg.selectAll(".node")
+        .data(data.nodes)
+      .enter().append("circle")
+        .attr("class", "node")
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; })
+        .attr("r", 8)
+        .style("fill", function(d) { return color(d.group); })
+        .call(force.drag);
+
+    //change the attributes of pre-existing elements
+    var tooltips = svg.selectAll(".node")    
+        .on("mouseover", function(d,i) {
+            d3.select(node[0][i])
+                .attr("r", 12);
+            d3.select(".tooltip")
+                .style("left",d.x - 60/2 +"px")
+                .style("top",d.y - 25 +"px")
+                .html(d.name + " " + d.group)
+                .style("display","inline");
+        })      
+        .on("mouseout", function(d,i){
+            d3.select(node[0][i])
+                .attr("r",8);
+            d3.select(".tooltip")
+                .style("display","none");
+        });
+
+});
+	
+</script>
+
+{% endblock %}

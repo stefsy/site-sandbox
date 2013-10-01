@@ -1,0 +1,19 @@
+{% extends "baselayout.html" %}
+{% block body %}
+	<title>stefsy</title> 
+	<h1>stefsy</h1>
+		<p>data and startups. San Francisco balikbayan. 
+			Stanford, Class of 2011. Wildfire by Google. </p>
+	<div id = "proj"> 
+		<h2>projects</h2> 
+	</div>
+	<div class= "expand">
+		<ul>
+			<li><a href = "http://go.wf-social.com/Brand_Advocate_Report_Req_US.html"> How Superbrands Breed Superfans. Wildfire by Google. Aug 2012. </a>
+			<li><a href = "{{ url_for('rects') }}"> Fun with Rectangles </a>
+			<li><a href = "{{ url_for('nodes') }}"> Fun with Nodes </a> 
+		</ul>
+	</div>
+	<h2>let's talk</h2>
+
+{% endblock %}
