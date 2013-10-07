@@ -1,13 +1,13 @@
-body            { font-family: 'Helvetica',sans-serif;
+body            { font-family: 'PT Serif',serif;
 					font-size: 16pt;}
-a, h1, h2       { color: #3d3d3d; }
-h1, h2          { font-family: 'Helvetica', sans-serif; margin: 0; }
+a, h1, h2       { font-family: 'PT Serif',serif; color: #3d3d3d; }
+h1, h2          { font-family: 'Lato', sans-serif; margin: 0; }
 h1              { border-bottom: 2px solid #eee; 
 					margin-bottom: 5px;}
 h2              { font-size: 1.2em; }
 ul				{ list-style-type: none}
-li 				{ font-size: 14pt; font-style: italic}
-p 				{ font-size: 12pt; }
+li 				{ font-size: 11pt; font-style: italic}
+p 				{ font-size: 11pt; }
 
 /*refers to classes*/
 .page           { margin: 2em auto; width: 90%;
@@ -20,10 +20,14 @@ p 				{ font-size: 12pt; }
 
 .chart rect 	{stroke:white;}
 
-.frame			{position:relative;}
+
 .link 			{ stroke: #7e7e7e; stroke-opacity: 0.6px;}
 
 .node 			{ stroke: #000000; stroke-width: 1.5px; }
+
+/*frame relative and tooltip absolute allows floating tooltip*/ 
+
+.frame			{ position:relative;}
 
 .tooltip 		{ background: antiquewhite; opacity: 0.9;
 					padding: 2px; width: 60px; height: 20px; 
@@ -32,3 +36,14 @@ p 				{ font-size: 12pt; }
 
 /*hides the content of expand class by default. revealed via toggling*/
 .expand			{ display: none ; }
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
