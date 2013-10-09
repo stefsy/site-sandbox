@@ -1,0 +1,17 @@
+{ "Countries": [
+	{"Country" : "United States" , "Workers" : 159.068557, "Zone" : "NAFTA"},
+	{"Country" : "Canada" , "Workers" : 19.202267, "Zone": "NAFTA"},
+	{"Country" : "Mexico" , "Workers" : 52.062599, "Zone": "NAFTA"},
+	{"Country" : "France" , "Workers" : 30.065127, "Zone": "European Union"},
+	{"Country" : "Germany" , "Workers" : 42.277708 , "Zone": "European Union"},
+	{"Country" : "Spain" , "Workers" : 23.257658 , "Zone": "European Union"},
+	{"Country" : "Greece" , "Workers" : 5.290836, "Zone": "European Union"},
+	{"Country" : "Philippines" , "Workers" : 39.845570, "Zone" : "ASEAN"},
+	{"Country" : "Malaysia" , "Workers" : 12.651070, "Zone" : "ASEAN"},
+	{"Country" : "Singapore" , "Workers" : 2.863909, "Zone" : "ASEAN"},
+	{"Country" : "Thailand" , "Workers" : 38.731466, "Zone": "ASEAN" },
+	{"Country" : "DR Congo" , "Workers" : 24.938621, "Zone" : "COMESA"},
+	{"Country" : "Egypt" , "Workers" : 26.639818, "Zone" : "COMESA"},
+	{"Country" : "Ethiopia" , "Workers" : 42.136780, "Zone" : "COMESA"}
+	]
+}

@@ -4,19 +4,84 @@
 <title>Workers</title>
 <h1>d3 Sandbox</h1>
 <p> sortable bar chart</p>
-<p><a href = "http://bl.ocks.org/mbostock/3885705"> mbostock</a>  as a starting point.
-    Labor figures from the <a href = "http://data.worldbank.org/indicator/SL.TLF.TOTL.IN">  World Bank's excellent indicator API. </a> </p>
+<p><a href = "http://bl.ocks.org/mbostock/3885705"> mbostock</a>  as a starting point. <br> 
+    2011 labor figures from the <a href = "http://data.worldbank.org/indicator/SL.TLF.TOTL.IN">  World Bank's excellent indicator API. </a> </p>
 
+<button> Sort </button>
 <div class = "frame">
     <div class = "tooltip"></div>
 </div> 
-    
 
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
 
+/*setting up svg*/
+var width = 900; 
+var height = 300;                
 
-   
+var svg = d3.select(".frame").append("svg")
+                .attr("width",width)
+                .attr("height",height)
+                .append("g");
+
+/*frame formatting*/
+var color = d3.scale.category20(); 
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1, 1);
+
+var y = d3.scale.linear()
+	.domain([0,160])
+    .range([0,height]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+/*g is a grouping mechanism for svg*/    
+svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+d3.json("{{ url_for('static', filename='countries.json') }}", function(data) { 
+
+/*data initial entry*/
+	svg.selectAll(".rect")
+		.data(data.Countries)
+	.enter().append("rect")
+		.attr("class", "rect")
+		.attr("x", function(d,i) {return i*55; })
+		.attr("width", "50px")
+		.attr("y", function(d) {return height - y(d.Workers); })
+		.attr("height", function(d) {return y(d.Workers); })
+		.style("fill", function(d) { return color(d.Zone); } );
+
+/*tooltip hover*/
+	var tooltips = svg.selectAll(".rect")    
+     .on("mouseover", function(d,i) {
+         d3.select(".tooltip")
+             .style("left", i*55 +"px")
+             .style("top", height/2 + "px")
+             .html(d.Country + " <br>" + d.Workers +"m <br>" + d.Zone)
+             .style("display","inline");
+     })      
+     .on("mouseout", function(d,i){
+         d3.select(".tooltip")
+             .style("display","none");
+     });
+
+});
+
+
 
 </script>
 

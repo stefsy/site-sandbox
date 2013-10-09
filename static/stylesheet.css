@@ -18,7 +18,7 @@ p 				{ font-size: 11pt; }
                   border: 1px solid #aacbe2; }
 .error          { background: #f0d6d6; padding: 0.5em; }
 
-.chart rect 	{stroke:white;}
+.rect 	    {stroke:white;}
 
 
 .link 			{ stroke: #7e7e7e; stroke-opacity: 0.6px;}
@@ -29,10 +29,10 @@ p 				{ font-size: 11pt; }
 
 .frame			{ position:relative;}
 
-.tooltip 		{ background: antiquewhite; opacity: 0.9;
-					padding: 2px; width: 60px; height: 20px; 
-					font-size: 15px; text-align: center;
-					display:none; position:absolute; }
+.tooltip 		{ background: azure; opacity: 0.9;
+					   padding: 2px;  
+					   font-size: 15px; text-align: center;
+					   display:none; position:absolute; }
 
 /*hides the content of expand class by default. revealed via toggling*/
 .expand			{ display: none ; }
