@@ -79,6 +79,28 @@ d3.json("{{ url_for('static', filename='countries.json') }}", function(data) {
              .style("display","none");
      });
 
+/*Click!*/ 
+
+      d3.selectAll("button").on("click", function() {
+
+    	var up = d3.selectAll("rect")
+    				.data(newData); 
+
+    	/*transition graphics*/
+    	up.transition()
+    		.duration(1000)
+    		.attr("width", x);
+
+    	up.enter().append("rect")
+			.attr("y", function(d,i) { return i*20; })
+     		.attr("width",x)
+     		.attr("height",20);
+
+     	/*exit block of data*/
+     	up.exit().remove(); 
+
+  	});
+
 });
 
 
