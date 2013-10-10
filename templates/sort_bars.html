@@ -1,28 +1,68 @@
 {% extends "baselayout.html" %}
 {% block body %}
 
+<style>
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.rect {
+  fill-opacity: .9;
+}
+
+.x.axis path {
+  display: none;
+}
+
+</style>
+
 <title>Workers</title>
 <h1>d3 Sandbox</h1>
-<p> sortable bar chart</p>
-<p><a href = "http://bl.ocks.org/mbostock/3885705"> mbostock</a>  as a starting point. <br> 
-    2011 labor figures from the <a href = "http://data.worldbank.org/indicator/SL.TLF.TOTL.IN">  World Bank's excellent indicator API. </a> </p>
 
-<button> Sort </button>
+<h2>Laborers per Country 2011: a sortable bar chart</h2>
+
+<button> Sort from least to most workers </button>
+
 <div class = "frame">
     <div class = "tooltip"></div>
 </div> 
+
+<p><a href = "http://bl.ocks.org/mbostock/3885705"> mbostock</a>  as a starting point. <br> 
+     labor figures from the <a href = "http://data.worldbank.org/indicator/SL.TLF.TOTL.IN">  World Bank's excellent indicator API. </a> </p>
+
+<p> surprisingly tough to work with labeling axes. the data manipulation was much easier than the visual display. practice more with axes, and with g. </p>
+
+<ul>
+	<li>?dynamically labeling axes
+	<li>?ordinal scaling the x attribute
+	<li>scaling numbers to fit graph 
+	<li>creating visible axes 
+	<li>resorting arrays 
+	<li>grouping elements together with 'g' 
+	<li>better tooltips	
+</ul>
 
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
 
 /*setting up svg*/
-var width = 900; 
-var height = 300;                
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;               
 
 var svg = d3.select(".frame").append("svg")
-                .attr("width",width)
-                .attr("height",height)
-                .append("g");
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 /*frame formatting*/
 var color = d3.scale.category20(); 
@@ -40,7 +80,8 @@ var xAxis = d3.svg.axis()
 
 var yAxis = d3.svg.axis()
     .scale(y)
-    .orient("left");
+    .orient("left")
+    .tickFormat(d3.format("f"));
 
 /*g is a grouping mechanism for svg*/    
 svg.append("g")
@@ -80,24 +121,26 @@ d3.json("{{ url_for('static', filename='countries.json') }}", function(data) {
      });
 
 /*Click!*/ 
+      d3.select("button").on("click", function() {
 
-      d3.selectAll("button").on("click", function() {
+      	/*best practice use a staggered delay*/
+      	var delay = function(d, i) { return i * 50; };
 
-    	var up = d3.selectAll("rect")
-    				.data(newData); 
+      	var sortData = data.Countries.sort(function(a,b) {
+      		return a.Workers - b.Workers;
+      	}); 
 
-    	/*transition graphics*/
-    	up.transition()
-    		.duration(1000)
-    		.attr("width", x);
+      	/*this solution rebinds a new set of data to the rects
+      	and then changes the height of each rect in place*/ 
 
-    	up.enter().append("rect")
-			.attr("y", function(d,i) { return i*20; })
-     		.attr("width",x)
-     		.attr("height",20);
-
-     	/*exit block of data*/
-     	up.exit().remove(); 
+      	d3.selectAll(".rect")
+      		.data(sortData)
+      		/* why does it work if i don't call update() */ 
+      		.transition()
+      		.attr("y", function(d) {return height - y(d.Workers); })
+			.attr("height", function(d) {return y(d.Workers); })
+			.style("fill", function(d) { return color(d.Zone); } )
+			.duration(delay);
 
   	});
 

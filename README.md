@@ -6,4 +6,4 @@ Keeping myself accountable for learning
 - webapp development
 - data scraping
 - jQuery / js
-- d3jss
+- d3js

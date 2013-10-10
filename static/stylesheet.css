@@ -6,7 +6,7 @@ h1              { border-bottom: 2px solid #eee;
 					margin-bottom: 5px;}
 h2              { font-size: 1.2em; }
 ul				{ list-style-type: none}
-li 				{ font-size: 11pt; font-style: italic}
+li 				{ font-size: 10pt; }
 p 				{ font-size: 11pt; }
 
 /*refers to classes*/
@@ -27,15 +27,17 @@ p 				{ font-size: 11pt; }
 
 /*frame relative and tooltip absolute allows floating tooltip*/ 
 
-.frame			{ position:relative;}
+.frame			{ position:relative; margin: 25px 0px;}
 
 .tooltip 		{ background: azure; opacity: 0.9;
 					   padding: 2px;  
 					   font-size: 15px; text-align: center;
 					   display:none; position:absolute; }
 
+.proj:hover { color: #FFF;}
+
 /*hides the content of expand class by default. revealed via toggling*/
-.expand			{ display: none ; }
+/*.expand			{ display: none ; }*/
 
 .axis text {
   font: 10px sans-serif;
