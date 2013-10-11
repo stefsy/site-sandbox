@@ -1,7 +1,7 @@
 from flask import Flask, request, session, g, redirect, url_for, render_template
 
 #configure
-#DEBUG = True #DO NOT USE THIS ON PRODUCTION
+DEBUG = True #DO NOT USE THIS ON PRODUCTION
 SECRET_KEY = 'development key'
 
 #actual app creation
@@ -28,6 +28,10 @@ def nodes():
 @app.route("/sort_bars/")
 def sort_bars():
  	return render_template('sort_bars.html')
+
+@app.route("/donuts/")
+def donuts():
+ 	return render_template('donuts.html') 	
 
 @app.route("/life/")
 def womp():
