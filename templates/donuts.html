@@ -3,14 +3,20 @@
 	<title>Pies, Donuts, TV</title> 
 	<h1>d3 Sandbox</h1>
 
-<h2> YouTube </h2>
+<h2> YouTube</h2>
+
+{% if yt_key %}
+	<p> youtube api key {{ yt_key }} </p>
+{% else %}
+	<p> where did it go? </p>
+{% endif %}
 
 <div class = "frame">
     <div class = "tooltip"></div>
 </div> 
 
 <p> <a href="http://bl.ocks.org/mbostock/1346395">mbostock reference</a>  
-little more ambitious. enter in a YouTube account or playlist to get a 
+enter in a YouTube account or playlist to get a 
 breakdown of which videos are driving views and likes</p> 
 
 <ul>

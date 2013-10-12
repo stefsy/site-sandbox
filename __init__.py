@@ -1,5 +1,9 @@
 from flask import Flask, request, session, g, redirect, url_for, render_template
 
+#importing api keys
+keyfile = open("dev_keys/yt_v3.txt","r")
+yt_key = keyfile.readline()
+
 #configure
 DEBUG = True #DO NOT USE THIS ON PRODUCTION
 SECRET_KEY = 'development key'
@@ -9,9 +13,9 @@ app = Flask(__name__)
 
 # loading the configuration from the all caps chunk above
 # usually it's a better idea to load it from a file using from_envvar()
-app.config.from_object(__name__) 
+app.config.from_object(__name__)
 
-#static empty pages
+#static pages
 @app.route("/")
 def homepage():
 	return render_template('homepage.html')
@@ -31,7 +35,7 @@ def sort_bars():
 
 @app.route("/donuts/")
 def donuts():
- 	return render_template('donuts.html') 	
+ 	return render_template('donuts.html',yt_key=yt_key)
 
 @app.route("/life/")
 def womp():
