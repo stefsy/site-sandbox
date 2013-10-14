@@ -49,3 +49,6 @@ p 				{ font-size: 11pt; }
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
+.arc path {
+  stroke: #fff;}

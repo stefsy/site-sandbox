@@ -3,6 +3,7 @@ from flask import Flask, request, session, g, redirect, url_for, render_template
 #importing api keys
 keyfile = open("dev_keys/yt_v3.txt","r")
 yt_key = keyfile.readline()
+keyfile.close()
 
 #configure
 DEBUG = True #DO NOT USE THIS ON PRODUCTION

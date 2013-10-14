@@ -137,9 +137,9 @@ d3.json("{{ url_for('static', filename='countries.json') }}", function(data) {
       		/* why does it work if i don't call update() */ 
       		.transition()
       		.attr("y", function(d) {return height - y(d.Workers); })
-			.attr("height", function(d) {return y(d.Workers); })
-			.style("fill", function(d) { return color(d.Zone); } )
-			.duration(delay);
+			    .attr("height", function(d) {return y(d.Workers); })
+			    .style("fill", function(d) { return color(d.Zone); } )
+			    .duration(delay);
 
   	});
 

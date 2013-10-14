@@ -11,6 +11,12 @@
 	<p> where did it go? </p>
 {% endif %}
 
+<form>
+	<textarea id="yt_channelid" placeholder = "thewockeez"></textarea>
+</form> 
+
+<button id= "yt_button">go</button> 
+
 <div class = "frame">
     <div class = "tooltip"></div>
 </div> 
@@ -22,26 +28,55 @@ breakdown of which videos are driving views and likes</p>
 <ul>
 	<li> YouTube Data API v3
 	<li> .gitignore developer keys
-	<li> pie 
+	<li> jquery forms 
+	<li> svg arcs and paths
 </ul> 
 
 <script>
-//create chart space
 
+//create chart variables
 var width = 900; 
 var height = 400; 
+var radius = Math.min(width,height)/2;
 var color = d3.scale.category20();                
 
-var svg = d3.selectAll(".frame").append("svg")
-                .attr("width",width)
-                .attr("height",height);
+//build svg canvas
+var arc = d3.svg.arc()
+    .outerRadius(radius - 10)
+    .innerRadius(0);
 
-//placeholder element
-svg.append("circle")
-	.attr("r", "100px")
-	.attr("cx", width/2)
-	.attr("cy", height/2)
-	.attr("fill", "#7e7e7e");
+var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) { return d.Workers; });
+
+var svg = d3.select(".frame").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+d3.json("{{ url_for('static', filename='countries.json') }}", function(error, data) {
+
+  var g = svg.selectAll(".arc")
+      .data(pie(data.Countries))
+    .enter().append("g")
+      .attr("class", "arc");
+
+  g.append("path")
+      .attr("d", arc)
+      .style("fill", function(d,i) { return color(i); });
+});
+
+//identify channel and url
+$("#yt_button").click(function() {
+	var yt_channel = $("#yt_channelid").val();
+
+	svg.append("text")
+		.attr("x", width/4)
+		.attr("y", height/4)
+		.text("one two three " + yt_channel );
+
+}); 
 
 </script>
 
