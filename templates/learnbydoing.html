@@ -1,0 +1,19 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<title>Learn by Doing</title>
+<h1>Learn by Doing</h1>
+
+<p>Learning one new thing every day, and commiting it publicly to <a href="http://www.github.com/stefsy">Github</a> to keep myself honest. Create, create, create.</p>
+
+<p>Not the place for perfectionism. Inspired by Jennifer Dewalt's <a href= "http://www.jenniferdewalt.com">180 Days of Code</a>, my exercise nut friends, and some interesting research on learning strategies. </p> 
+
+<ul>
+	<li><a href = "{{ url_for('donuts') }}"> Ex 4: Pies, Donuts, TV </a>
+	<li><a href = "{{ url_for('sort_bars') }}"> Ex 3: Sorting Bar Charts </a> 
+	<li><a href = "{{ url_for('nodes') }}"> Ex 2: Fun with Nodes </a> 
+	<li><a href = "{{ url_for('rects') }}"> Ex 1: Fun with Rectangles </a>
+	<li>Ex 0: Creating and deploying a Flask application</a> 
+</ul>
+
+{% endblock %}

@@ -38,6 +38,10 @@ def sort_bars():
 def donuts():
  	return render_template('donuts.html',yt_key=yt_key)
 
+@app.route("/learnbydoing/")
+def learnbydoing():
+ 	return render_template('learnbydoing.html') 	
+
 @app.route("/life/")
 def womp():
 	return "It doesn't make much sense."

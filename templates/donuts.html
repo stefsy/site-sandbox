@@ -1,9 +1,12 @@
 {% extends "baselayout.html" %}
 {% block body %}
-	<title>Pies, Donuts, TV</title> 
-	<h1>d3 Sandbox</h1>
 
-<h2> YouTube</h2>
+<title>Pies, Donuts, TV</title> 
+<h1>d3 Sandbox</h1>
+
+<h2> Pie Charts and TV Screens </h2>
+<p>enter in a YouTube account or playlist to get a 
+breakdown of which videos are driving views and likes</p>
 
 {% if yt_key %}
 	<p> youtube api key {{ yt_key }} </p>
@@ -21,15 +24,20 @@
     <div class = "tooltip"></div>
 </div> 
 
-<p> <a href="http://bl.ocks.org/mbostock/1346395">mbostock reference</a>  
-enter in a YouTube account or playlist to get a 
-breakdown of which videos are driving views and likes</p> 
+<p> <a href="http://bl.ocks.org/mbostock/1346395">mbostock reference</a>  </p> 
 
 <ul>
 	<li> YouTube Data API v3
 	<li> .gitignore developer keys
 	<li> jquery forms 
 	<li> svg arcs and paths
+  <li> ?pull in list of lists -> generate one per playlist
+  <li> ?dynamic page to accomodate any # of playlists
+  <li> ?for each playlist break out videos by views
+  <li> ?break out videos by likes
+  <li> ?hover over tooltips
+  <li> ?click to see video
+  <li> ?error checking for invalid channel
 </ul> 
 
 <script>
@@ -40,28 +48,32 @@ var height = 400;
 var radius = Math.min(width,height)/2;
 var color = d3.scale.category20();                
 
-//build svg canvas
+// defines arc
 var arc = d3.svg.arc()
     .outerRadius(radius - 10)
     .innerRadius(0);
 
+// is actually a function applied to the data
 var pie = d3.layout.pie()
     .sort(null)
     .value(function(d) { return d.Workers; });
 
+//defines svg
 var svg = d3.select(".frame").append("svg")
     .attr("width", width)
     .attr("height", height)
+    //what is this grouping together? 
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 d3.json("{{ url_for('static', filename='countries.json') }}", function(error, data) {
-
   var g = svg.selectAll(".arc")
+  	//applies pie layout on data to calc angles
       .data(pie(data.Countries))
     .enter().append("g")
       .attr("class", "arc");
 
+  //confused. 
   g.append("path")
       .attr("d", arc)
       .style("fill", function(d,i) { return color(i); });

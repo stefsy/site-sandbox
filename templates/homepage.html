@@ -1,21 +1,26 @@
 {% extends "baselayout.html" %}
 {% block body %}
 	<title>stefsy</title> 
+
 	<h1>stefsy</h1>
-		<p>data and startups. San Francisco balikbayan.  <br> 
-			built tools at Wildfire by Google. Stanford 2011</p>
+		<p>data and startups. San Francisco balikbayan.  </p> 
+		<p>ran analytics and built tools at Wildfire and Google. Stanford 2011.</p>
 	<div id = "proj"> 
 		<h2>projects</h2> 
 	</div>
 	<div class= "expand">
 		<ul>
-			<li><a href = "{{ url_for('donuts') }}"> Pies, Donuts, TV </a>
-			<li><a href = "{{ url_for('sort_bars') }}"> Sorting Bar Charts </a> 
-			<li><a href = "{{ url_for('nodes') }}"> Fun with Nodes </a> 
-			<li><a href = "{{ url_for('rects') }}"> Fun with Rectangles </a>
-			<li><a href = "http://go.wf-social.com/Brand_Advocate_Report_Req_US.html"> How Superbrands Breed Superfans. Wildfire by Google. Aug 2012. </a>
+			<li><a href = "{{ url_for('learnbydoing') }}">Learn by Doing: A D3 Sandbox</a> 
+			<li><a href = "http://www.google.com/think/research-studies/how-superbrands-breed-superfans.html"> How Superbrands Breed Superfans.</a> Google. Aug 2012.
+			<li><a href = "http://go.wf-social.com/TimelinesEffect.html"> Optimizing Content for the New Timeline Format.</a> Wildfire. Feb 2012.
 		</ul>
 	</div>
+
+	<div id="contact"> 
+		<h3>Let's have a conversation</h3> 
+		<p style="margin-left:3em;">I love new tech, people, and coffee. Reach me at stef@stefsy.com </p> 
+	</div> 
 	
+	<script>
 
 {% endblock %}
