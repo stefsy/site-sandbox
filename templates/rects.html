@@ -3,13 +3,17 @@
 
 <title>Colorful Bars</title>
 <h1>d3 Sandbox</h1>
-<p> generating bar charts. random data on update.</p>
 	
 <button>Update</button> 
 <div class = "box"> </div>
 
+<ul>
+    <li>bar charts
+    <li>randomly generating data
+</ul> 
+
 <script>
-    var nCols = 16;
+    var nCols = 15;
     var color = d3.scale.category20();
 
 	var initData = [];
@@ -39,35 +43,47 @@
 //black line on y-axis 
     chart.append("line")
     	.attr("y1",0)
-    	.attr("y2", 120)
-    	.style("stroke", "#000")
+    	.attr("y2", 20*initData.length)
+    	.style("stroke", "#000");
 
     d3.selectAll("button").on("click", function() {
 
-        //generate new array of 5 numbers between 1 and 50
+        //generate new array of x numbers between 1 and 50
         var newData = [];
-        for(var i=0; i<nCols;i++){
+        var newCols = Math.floor(Math.random()*20)+1;
+
+        for(var i=0; i<newCols;i++){
             newData.push(Math.floor(Math.random()*50)+1);
         };
 
-    	var up = d3.selectAll("rect")
+    	var up = chart.selectAll("rect")
     				.data(newData); 
 
+        //1. exit
+        up.exit()
+            .transition().duration(750).attr("width",0)
+            .remove();
+
+        //2. update
     	up.transition()
     		.duration(1000)
     		.attr("width", x);
 
+        //3. enter (last item transitioning in)
     	up.enter().append("rect")
 			.attr("y", function(d,i) { return i*20; })
-     		.attr("width",x)
-     		.attr("height",20);
+     		.attr("height",20)
+            .style("fill", function(d,i) { return color(i);} )
+            .attr("width",0)
+        .transition().duration(750).attr("width",x);
 
-     	up.exit().remove(); 
 
-     	d3.selectAll(".chart").attr("height", 20*data2.length);
-
+        chart.selectAll("line")
+            .transition().duration(750)
+            .attr("y2", 20*newData.length);
   	});
 
 </script>
+
 
 {% endblock %}
