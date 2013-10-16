@@ -1,12 +1,8 @@
 from flask import Flask, request, session, g, redirect, url_for, render_template
 
-#importing api keys
-keyfile = open("dev_keys/yt_v3.txt","r")
-yt_key = keyfile.readline()
-keyfile.close()
 
 #configure
-DEBUG = True #DO NOT USE THIS ON PRODUCTION
+#DEBUG = True #DO NOT USE THIS ON PRODUCTION
 SECRET_KEY = 'development key'
 
 #actual app creation
@@ -22,6 +18,11 @@ def homepage():
 	return render_template('homepage.html')
 
 #route generates nice URLS
+
+@app.route("/learnbydoing/")
+def learnbydoing():
+ 	return render_template('learnbydoing.html') 	
+
 @app.route("/rects/")
 def rects():
  	return render_template('rects.html')
@@ -36,11 +37,11 @@ def sort_bars():
 
 @app.route("/donuts/")
 def donuts():
- 	return render_template('donuts.html',yt_key=yt_key)
+ 	return render_template('donuts.html')
 
-@app.route("/learnbydoing/")
-def learnbydoing():
- 	return render_template('learnbydoing.html') 	
+@app.route("/channelstats/")
+def channelstats():
+ 	return render_template('channelstats.html')
 
 @app.route("/life/")
 def womp():
@@ -49,5 +50,4 @@ def womp():
 	#run the app
 if __name__ == "__main__":
 	app.run()
-
 

@@ -1,0 +1,97 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<title>YouTube Channel Stats</title> 
+<h1>d3 Sandbox</h1>
+
+
+<h2>Youtube Channel Stats </h2>
+
+
+<p>enter in a YouTube account to see some metrics</p>
+
+<form>
+	<textarea id="yt_channelid" placeholder = "lizziebennet"></textarea>
+</form> 
+
+<button id= "yt_button">go</button> 
+
+<div id="ARGH"></div>
+
+<div class = "frame">
+    <div class = "tooltip"></div>
+</div> 
+
+<p> <a href="http://bl.ocks.org/mbostock/1346395">mbostock reference</a>  </p> 
+
+<ul>
+	<li> YouTube Data API v3
+	<li> .gitignore developer keys
+	<li> jquery forms 
+  <li> handling json w/jquery
+  <li> error checking for invalid channel
+</ul> 
+
+<script>
+
+// what the hell am i doing here. 
+$.get("{{ url_for('static', filename='yt_v3.txt') }}", function(error, data){
+}, 'text');
+
+$('#ARGH').load("{{ url_for('static', filename='yt_v3.txt') }}");
+
+//create chart variables
+var width = 900; 
+var height = 300; 
+var radius = Math.min(width,height)/2;
+var color = d3.scale.category20();  
+
+var svg = d3.select(".frame").append("svg")
+    .attr("width", width)
+    .attr("height", height); 
+
+svg.append("text")
+    .attr("x", 50)
+    .attr("y", 50)
+    .attr("id", "cname")
+    .text("Channel: ");    
+
+svg.append("text")
+    .attr("x", 50)
+    .attr("y", 100)
+    .attr("id", "vids")
+    .text("Videos: ");    
+
+svg.append("text")
+    .attr("x", 50)
+    .attr("y", 150)
+    .attr("id", "views")
+    .text("Views: ");       
+
+svg.append("text")
+    .attr("x", 50)
+    .attr("y", 200)
+    .attr("id", "subs")
+    .text("Subscribers: ");    
+
+svg.append("text")
+    .attr("x", 50)
+    .attr("y", 250)
+    .attr("id", "comm")
+    .text("Comments: ");               
+
+//identify channel and url
+$("#yt_button").click(function() {
+	var yt_channel = $("#yt_channelid").val();
+
+	svg.append("text")
+		.attr("x", width/4)
+		.attr("y", height/4)
+		.text("one two three " + yt_channel );
+
+}); 
+
+
+</script>
+
+{% endblock %}
