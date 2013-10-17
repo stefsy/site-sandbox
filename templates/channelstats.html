@@ -34,60 +34,67 @@
 
 <script>
 
-// what the hell am i doing here. 
-$.get("{{ url_for('static', filename='yt_v3.txt') }}", function(error, data){
-}, 'text');
-
-$('#ARGH').load("{{ url_for('static', filename='yt_v3.txt') }}");
-
 //create chart variables
 var width = 900; 
 var height = 300; 
 var radius = Math.min(width,height)/2;
-var color = d3.scale.category20();  
+var color = d3.scale.category20();       
 
 var svg = d3.select(".frame").append("svg")
-    .attr("width", width)
-    .attr("height", height); 
-
-svg.append("text")
-    .attr("x", 50)
-    .attr("y", 50)
-    .attr("id", "cname")
-    .text("Channel: ");    
-
-svg.append("text")
-    .attr("x", 50)
-    .attr("y", 100)
-    .attr("id", "vids")
-    .text("Videos: ");    
-
-svg.append("text")
-    .attr("x", 50)
-    .attr("y", 150)
-    .attr("id", "views")
-    .text("Views: ");       
-
-svg.append("text")
-    .attr("x", 50)
-    .attr("y", 200)
-    .attr("id", "subs")
-    .text("Subscribers: ");    
-
-svg.append("text")
-    .attr("x", 50)
-    .attr("y", 250)
-    .attr("id", "comm")
-    .text("Comments: ");               
+  .attr("width", width)
+  .attr("height", height);       
 
 //identify channel and url
 $("#yt_button").click(function() {
-	var yt_channel = $("#yt_channelid").val();
 
-	svg.append("text")
-		.attr("x", width/4)
-		.attr("y", height/4)
-		.text("one two three " + yt_channel );
+  svg.append("text")
+        .attr("x", 50)
+        .attr("y", 50)
+        .attr("id", "cname");
+
+  svg.append("text")
+        .attr("x", 50)
+        .attr("y", 100)
+        .attr("id", "vids");
+
+  svg.append("text")
+        .attr("x", 50)
+        .attr("y", 150)
+        .attr("id", "views"); 
+
+  svg.append("text")
+        .attr("x", 50)
+        .attr("y", 200)
+        .attr("id", "subs");   
+
+  svg.append("text")
+        .attr("x", 50)
+        .attr("y", 250)
+        .attr("id", "comm"); 
+
+  var yt_channel = $("#yt_channelid").val();
+  // why is reading a text file as a var so hard??? god damn, just HAVE my dev key
+  var yt_key = 'AIzaSyDQH6ODAQdQ1yaxRY2xTK8krBIElQQ6KoM';
+
+  // what the hell am i doing here. 
+  /*$.get("{{ url_for('static', filename='yt_v3.txt') }}", function(error, data){
+  }, 'text');
+
+  $('#ARGH').load("{{ url_for('static', filename='yt_v3.txt') }}");
+  var print_me = $("#ARGH").text(); */
+
+  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails%2Cstatistics&forUsername=' + yt_channel + '&key=' + yt_key; 
+
+  $.getJSON(channel_gen_url)
+      .done(function( json ) {
+        console.log(json.items[0]);
+
+        $('#cname').text("Channel " + yt_channel);
+        $('#vids').text("Videos " + json.items[0]['statistics']['videoCount']);
+        $('#views').text("Views " + json.items[0]['statistics']['viewCount']);
+        $('#subs').text("Subscribers " + json.items[0]['statistics']['subscriberCount']);
+        $('#comm').text("Comments " + json.items[0]['statistics']['commentCount']);
+      });
 
 }); 
 
