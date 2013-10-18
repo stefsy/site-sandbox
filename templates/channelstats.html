@@ -1,12 +1,15 @@
 {% extends "baselayout.html" %}
 {% block body %}
 
+<style>
+.output_text { font-family: Lato; font-size: 30px; }
+</style>
+
 <title>YouTube Channel Stats</title> 
 <h1>d3 Sandbox</h1>
 
 
 <h2>Youtube Channel Stats </h2>
-
 
 <p>enter in a YouTube account to see some metrics</p>
 
@@ -26,10 +29,11 @@
 
 <ul>
 	<li> YouTube Data API v3
-	<li> .gitignore developer keys
+	<li> .gitignore developer keys - but how to import it securely? 
 	<li> jquery forms 
   <li> handling json w/jquery
-  <li> error checking for invalid channel
+  <li> d3 formatting - a function that's called as a var
+  <li> applying a mix of d3 and jquery effects
 </ul> 
 
 <script>
@@ -38,7 +42,8 @@
 var width = 900; 
 var height = 300; 
 var radius = Math.min(width,height)/2;
-var color = d3.scale.category20();       
+var color = d3.scale.category20();     
+var formatter = d3.format(",");  
 
 var svg = d3.select(".frame").append("svg")
   .attr("width", width)
@@ -50,31 +55,34 @@ $("#yt_button").click(function() {
   svg.append("text")
         .attr("x", 50)
         .attr("y", 50)
+        .attr("class", "output_text")
         .attr("id", "cname");
 
   svg.append("text")
         .attr("x", 50)
         .attr("y", 100)
+        .attr("class", "output_text")
         .attr("id", "vids");
 
   svg.append("text")
         .attr("x", 50)
         .attr("y", 150)
+        .attr("class", "output_text")
         .attr("id", "views"); 
 
   svg.append("text")
         .attr("x", 50)
         .attr("y", 200)
+        .attr("class", "output_text")
         .attr("id", "subs");   
 
   svg.append("text")
-        .attr("x", 50)
         .attr("y", 250)
+        .attr("x", 50)
+        .attr("class", "output_text")
         .attr("id", "comm"); 
 
   var yt_channel = $("#yt_channelid").val();
-  // why is reading a text file as a var so hard??? god damn, just HAVE my dev key
-  var yt_key = 'AIzaSyDQH6ODAQdQ1yaxRY2xTK8krBIElQQ6KoM';
 
   // what the hell am i doing here. 
   /*$.get("{{ url_for('static', filename='yt_v3.txt') }}", function(error, data){
@@ -83,21 +91,23 @@ $("#yt_button").click(function() {
   $('#ARGH').load("{{ url_for('static', filename='yt_v3.txt') }}");
   var print_me = $("#ARGH").text(); */
 
-  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails%2Cstatistics&forUsername=' + yt_channel + '&key=' + yt_key; 
+  // why is reading a text file as a var so hard??? god damn, just HAVE my dev key
+  var yt_key = 'AIzaSyDQH6ODAQdQ1yaxRY2xTK8krBIElQQ6KoM';
+
+  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&forUsername=' + yt_channel + '&key=' + yt_key; 
 
   $.getJSON(channel_gen_url)
       .done(function( json ) {
         console.log(json.items[0]);
-
-        $('#cname').text("Channel " + yt_channel);
-        $('#vids').text("Videos " + json.items[0]['statistics']['videoCount']);
-        $('#views').text("Views " + json.items[0]['statistics']['viewCount']);
-        $('#subs').text("Subscribers " + json.items[0]['statistics']['subscriberCount']);
-        $('#comm').text("Comments " + json.items[0]['statistics']['commentCount']);
+  
+        $('#cname').text(json.items[0]['snippet']['title']);
+        $('#vids').text("Videos " + formatter(json.items[0]['statistics']['videoCount']));
+        $('#views').text("Views " + formatter(json.items[0]['statistics']['viewCount']));
+        $('#subs').text("Subscribers " + formatter(json.items[0]['statistics']['subscriberCount']));
+        $('#comm').text("Comments " + formatter(json.items[0]['statistics']['commentCount']));
       });
 
 }); 
-
 
 </script>
 
