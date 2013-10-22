@@ -19,6 +19,10 @@ def homepage():
 
 #route generates nice URLS
 
+@app.route("/channelstats/")
+def channelstats():
+ 	return render_template('channelstats.html')
+
 @app.route("/learnbydoing/")
 def learnbydoing():
  	return render_template('learnbydoing.html') 	
@@ -38,10 +42,6 @@ def sort_bars():
 @app.route("/donuts/")
 def donuts():
  	return render_template('donuts.html')
-
-@app.route("/channelstats/")
-def channelstats():
- 	return render_template('channelstats.html')
 
 @app.route("/life/")
 def womp():

@@ -43,11 +43,30 @@ breakdown of which videos are driving views and likes</p>
 
 <script>
 
-// what the hell am i doing here. 
+// what the hell am i doing here. API key
 $.get("{{ url_for('static', filename='yt_v3.txt') }}", function(error, data){
 }, 'text');
 
 $('#ARGH').load("{{ url_for('static', filename='yt_v3.txt') }}");
+
+/* step 0 have a channel username eg lizzie bennet diaries*/
+
+/* step 1 - channel id*/ 
+
+var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&forUsername=' + yt_channel + '&key=' + API_key; 
+
+var channel_id = "UCXfbQAimgtbk4RAUHtIAUww"
+
+/* 2 - list of playlists */ 
+
+var loplaylists = "https://www.googleapis.com/youtube/v3/playlists?part=id%2Csnippet&channelId="+ channel_id + "&maxResults=50&key=" + API_key
+
+/*for each playlist ,get the playlist_id*/
+var playlist_id = "UUXfbQAimgtbk4RAUHtIAUww"
+
+/* 3 - list of videos per */ 
+var playlis_url = "https://www.googleapis.com/youtube/v3/playlistItems?part=id%2Csnippet%2CcontentDetails%2Cstatus&playlistId=" + playlistid + "&key=" API_key
+
 
 
 
