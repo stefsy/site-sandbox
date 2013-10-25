@@ -1,13 +1,12 @@
 {% extends "baselayout.html" %}
 {% block body %}
 
-<title>Pies, Donuts, TV</title> 
+<title>Pies and TV</title> 
 <h1>d3 Sandbox</h1>
 
 <h2> Pie Charts and TV Screens </h2>
 
-<p>enter in a YouTube account or playlist to get a 
-breakdown of which videos are driving views and likes</p>
+<p>enter in a YouTube account to generate a pie chart of views per video per public playlist. </p>
 
 <form>
 	<textarea id="yt_channelid" placeholder = "thewockeez"></textarea>
@@ -23,24 +22,32 @@ breakdown of which videos are driving views and likes</p>
 
 <ul>
 	<li> YouTube Data API v3
-	<li> .gitignore developer keys
 	<li> jquery forms 
 	<li> svg arcs and paths
-  <li> ?pull in list of lists -> generate one per playlist
-  <li> ?dynamic page to accomodate any # of playlists
-  <li> ?for each playlist break out videos by views
-  <li> ?break out videos by likes
-  <li> ?hover over tooltips
-  <li> ?click to see video
-  <li> ?error checking for invalid channel
+  <li> pull in list of lists -> generate one per playlist
+  <li> dynamic page to accomodate any # of playlists
+  <li> for each playlist break out videos by views
+  <li> get list of videos by likes,comments,favorites,views
+  <li> multiple asynchronous calls 
+  <li> well, it works. 
 </ul> 
 
 <script>
 
+//video object constructor
+function video(vname,view,like,fav,comment) {
+  this.vname = vname;
+  this.views = view;
+  this.like = like;
+  this.fav = fav;
+  this.comment = comment;
+}
+
+
 //create chart variables
 var width = 900; 
 var height = 400; 
-var radius = Math.min(width,height)/2;
+var radius = Math.min(width,height)/4;
 var color = d3.scale.category20();                
 
 // defines arc
@@ -51,28 +58,8 @@ var arc = d3.svg.arc()
 // is actually a function applied to the data
 var pie = d3.layout.pie()
     .sort(null)
-    .value(function(d) { return d.Workers; });
+    .value(function(d) { return d.views; }); //BORK BORK 
 
-//defines svg
-var svg = d3.select(".frame").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    //what is this grouping together? 
-  .append("g")
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-d3.json("{{ url_for('static', filename='countries.json') }}", function(error, data) {
-  var g = svg.selectAll(".arc")
-  	//applies pie layout on data to calc angles
-      .data(pie(data.Countries))
-    .enter().append("g")
-      .attr("class", "arc");
-
-  //confused. 
-  g.append("path")
-      .attr("d", arc)
-      .style("fill", function(d,i) { return color(i); });
-});
 
 //identify channel and url
 $("#yt_button").click(function() {
@@ -83,13 +70,13 @@ $("#yt_button").click(function() {
   var yt_channel = $("#yt_channelid").val();
 
   /* 1 from username, get channel id*/ 
-  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&forUsername=' + yt_channel + '&key=' + API_key; 
+  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics&forUsername=' + yt_channel + '&key=' + API_key; 
 
   /*oh no, am i going to have to nest a bunch of asynchronous .getJSON calls? is that even best practice?*/
   $.getJSON(channel_gen_url)
     .done(function( channel_json ) {
 
-      console.log(channel_json.items[0]['id']);
+      //console.log(channel_json.items[0]['id']);
 
       var channel_id = channel_json.items[0]['id']
       var loplaylists_url = "https://www.googleapis.com/youtube/v3/playlists?part=id%2Csnippet&channelId="+ channel_id + "&maxResults=50&key=" + API_key
@@ -103,41 +90,84 @@ $("#yt_button").click(function() {
           for (var i=0; i< loplaylists_json['items'].length; i++) {
             loplaylists_array.push(loplaylists_json['items'][i]['id'])
           }
-          console.log(loplaylists_array);
+          //console.log(loplaylists_array);
 
           /*3 - videos in playlists*/ 
           var playlist_urls_array = [];
           for (var i=0; i< loplaylists_array.length; i++) {
-            playlist_urls_array.push("https://www.googleapis.com/youtube/v3/playlistItems?part=id%2Csnippet%2CcontentDetails%2Cstatus&playlistId=" + loplaylists_array[i] + "&key=" + API_key);
+            playlist_urls_array.push("https://www.googleapis.com/youtube/v3/playlistItems?part=id%2Csnippet%2Cstatus&playlistId=" + loplaylists_array[i] + "&maxResults=50&key=" + API_key);
           }
-          console.log(playlist_urls_array); 
+          //console.log(playlist_urls_array); 
           
           for (var i=0; i< playlist_urls_array.length; i++) {
             $.getJSON(playlist_urls_array[i])
               .done(function( playlist_json ){
-                /*forgot about paging after first 5 items*/ 
-                console.log(playlist_json['items'])
-                traceme();
+                //no paging assuming playlist items < 50
+                handleplaylists(playlist_json['items']);
               })
           }
-          /*num asynch calls 1 + 1 + num_playlists */
-          /*num youtube api calls: 1 + 1 + num_playlists*/ 
+          //num asynch calls 1 + 1 + num_playlists + num_videos
+          //num youtube api calls: 1 + 1 + num_playlists + num_videos
         }); 
     });
 
-  var testing = [];
+  function handleplaylists(playlist_json) {
+      /* console.log(playlist_json);*/
 
-  function traceme(jsonstuff) {
-    testing.push(jsonstuff);
+      //goes through playlist, gets video ids
+      var vid_id = [];
+      for(var i=0; i<playlist_json.length; i++){
+        vid_id.push(playlist_json[i]['snippet']['resourceId']['videoId']);
+      };
+      console.log(vid_id);
+
+      var vid_data = [];
+      //yet another set of async requests! 
+      for(var i=0; i<vid_id.length; i++){
+        $.getJSON("https://www.googleapis.com/youtube/v3/videos?part=statistics%2Csnippet&id=" + vid_id[i] + "&key=" + API_key)
+          .done(function( video_json ) {
+
+              //weeeeell better practice would be to exclude private videos in the first place
+              if(video_json['items'][0] != undefined){
+                var name = video_json['items'][0]['snippet']['title'];
+                var view = video_json['items'][0]['statistics']['viewCount'];
+                var like = video_json['items'][0]['statistics']['likeCount'];
+                var fav =  video_json['items'][0]['statistics']['favoriteCount'];
+                var comment = video_json['items'][0]['statistics']['commentCount'];
+                var vidObj = new video(name,view,like,fav,comment);
+                vid_data.push(vidObj);
+                //where is vid_data being scoped? getjson seems to be calling all vid urls in a sequence, but if i try to call vid_data outside of the function it's empty 
+                if(vid_data.length == vid_id.length) {
+                  //console.log(vid_data);
+                  //ready for processing as a chart
+                  var svg1 = d3.select(".frame").append("svg")
+                    .attr("width", width/2)
+                    .attr("height", height/2)
+                    //what is this grouping together? 
+                  .append("g")
+                    .attr("transform", "translate(" + width / 4 + "," + height / 4 + ")");
+
+                  var g = svg1.selectAll(".arc")
+                  .data(pie(vid_data))
+                  .enter().append("g")
+                    .attr("class","arc");
+
+                  g.append("path")
+                    .attr("d",arc)
+                    .style("fill",function(d,i) {return color(i) });
+
+                } 
+              }
+          }); 
+      }
+
   };
-
-  /*this doesn't work because it actually gets called BEFORE the getjson calls */ 
-  console.log("outside of traceme scope");
-  console.log(testing);
   
-  /*BIG DILEMMA: how to have a function that waits until all the asynch calls are in and the data's loaded before kicking off */ 
+  /*DILEMMA: how to have a function that waits until all the asynch calls are in and the data's loaded before kicking off */ 
+  /*let's try asynch creating one piechart for each playlist. i have definitely overreached on exercise scope*/ 
 
 }); 
+
 
 </script>
 
