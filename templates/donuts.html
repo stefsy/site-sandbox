@@ -6,7 +6,7 @@
 
 <h2> Pie Charts and TV Screens </h2>
 
-<p>enter in a YouTube account to generate a pie chart of views per video per public playlist. </p>
+<p>enter in a YouTube account to get a visual representation of their videos' relative impact on views per playlist. </p>
 
 <form>
 	<textarea id="yt_channelid" placeholder = "thewockeez"></textarea>
@@ -28,7 +28,8 @@
   <li> dynamic page to accomodate any # of playlists
   <li> for each playlist break out videos by views
   <li> get list of videos by likes,comments,favorites,views
-  <li> multiple asynchronous calls 
+  <li> multiple asynchronous calls
+  <li> closures and callbacks 
   <li> well, it works. 
 </ul> 
 
@@ -46,20 +47,19 @@ function video(vname,view,like,fav,comment) {
 
 //create chart variables
 var width = 900; 
-var height = 400; 
+var height = 450; 
 var radius = Math.min(width,height)/4;
 var color = d3.scale.category20();                
 
 // defines arc
 var arc = d3.svg.arc()
-    .outerRadius(radius - 10)
+    .outerRadius(radius - 30)
     .innerRadius(0);
 
 // is actually a function applied to the data
 var pie = d3.layout.pie()
-    .sort(null)
+    .sort(d3.ascending)
     .value(function(d) { return d.views; }); //BORK BORK 
-
 
 //identify channel and url
 $("#yt_button").click(function() {
@@ -81,45 +81,59 @@ $("#yt_button").click(function() {
       var channel_id = channel_json.items[0]['id']
       var loplaylists_url = "https://www.googleapis.com/youtube/v3/playlists?part=id%2Csnippet&channelId="+ channel_id + "&maxResults=50&key=" + API_key
 
-      /* 2 - list of playlists */ 
+      /* 2 get list of playlists and names*/ 
       $.getJSON(loplaylists_url)
         .done(function( loplaylists_json ){
 
-          /*it works but feels so wrong*/ 
+          //console.log(loplaylists_json['items'][0]);
+
+          //array of playlist ids for channel
           var loplaylists_array = [];
+          //array of playlist names 
+          var loplaylists_name = [];
+          //would it be better to have an array of objects w/ name & id? 
+
+          //can compress lines 95 to 110 into cleaner block of code
+
           for (var i=0; i< loplaylists_json['items'].length; i++) {
-            loplaylists_array.push(loplaylists_json['items'][i]['id'])
+            loplaylists_array.push(loplaylists_json['items'][i]['id']);
+            loplaylists_name.push(loplaylists_json['items'][i]['snippet']['title']);
           }
-          //console.log(loplaylists_array);
+          console.log(loplaylists_array);
+          console.log(loplaylists_name);
 
           /*3 - videos in playlists*/ 
+
+          //array of API get requests. 1 per playlist_id
           var playlist_urls_array = [];
           for (var i=0; i< loplaylists_array.length; i++) {
             playlist_urls_array.push("https://www.googleapis.com/youtube/v3/playlistItems?part=id%2Csnippet%2Cstatus&playlistId=" + loplaylists_array[i] + "&maxResults=50&key=" + API_key);
           }
-          //console.log(playlist_urls_array); 
+          //console.log(playlist_urls_array);
           
           for (var i=0; i< playlist_urls_array.length; i++) {
-            $.getJSON(playlist_urls_array[i])
-              .done(function( playlist_json ){
-                //no paging assuming playlist items < 50
-                handleplaylists(playlist_json['items']);
-              })
+            $.getJSON(playlist_urls_array[i],
+                (function( thisi ) {
+                  return function( playlist_json ) {
+                    handleplaylistdata(playlist_json['items'],loplaylists_name[thisi]);
+                  };
+                })(i))
           }
           //num asynch calls 1 + 1 + num_playlists + num_videos
           //num youtube api calls: 1 + 1 + num_playlists + num_videos
         }); 
     });
 
-  function handleplaylists(playlist_json) {
-      /* console.log(playlist_json);*/
+  function handleplaylistdata(playlist_json,playlist_name) {
+      //console.log(playlist_json);
+      console.log(playlist_name);
 
       //goes through playlist, gets video ids
       var vid_id = [];
       for(var i=0; i<playlist_json.length; i++){
         vid_id.push(playlist_json[i]['snippet']['resourceId']['videoId']);
       };
-      console.log(vid_id);
+     // console.log(vid_id);
 
       var vid_data = [];
       //yet another set of async requests! 
@@ -146,6 +160,14 @@ $("#yt_button").click(function() {
                     //what is this grouping together? 
                   .append("g")
                     .attr("transform", "translate(" + width / 4 + "," + height / 4 + ")");
+
+                  var ctitle = svg1.selectAll("text")
+                      .data(" ")
+                      .enter().append("text")
+                      .text(playlist_name) //from the callback!!!
+                      //x and y relative to center aligned position w/in svg1
+                      .attr("x", -90)
+                      .attr("y", -90);
 
                   var g = svg1.selectAll(".arc")
                   .data(pie(vid_data))

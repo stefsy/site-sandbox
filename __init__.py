@@ -2,7 +2,7 @@ from flask import Flask, request, session, g, redirect, url_for, render_template
 
 
 #configure
-#DEBUG = True #DO NOT USE THIS ON PRODUCTION
+DEBUG = True #DO NOT USE THIS ON PRODUCTION
 SECRET_KEY = 'development key'
 
 #actual app creation
@@ -17,15 +17,10 @@ app.config.from_object(__name__)
 def homepage():
 	return render_template('homepage.html')
 
-#route generates nice URLS
-
-@app.route("/channelstats/")
-def channelstats():
- 	return render_template('channelstats.html')
-
+#route generates URLS
 @app.route("/learnbydoing/")
 def learnbydoing():
- 	return render_template('learnbydoing.html') 	
+ 	return render_template('learnbydoing.html') 
 
 @app.route("/rects/")
 def rects():
@@ -39,13 +34,25 @@ def nodes():
 def sort_bars():
  	return render_template('sort_bars.html')
 
+@app.route("/channelstats/")
+def channelstats():
+ 	return render_template('channelstats.html')
+
 @app.route("/donuts/")
 def donuts():
- 	return render_template('donuts.html')
+	return render_template('donuts.html')
 
 @app.route("/life/")
 def womp():
 	return "It doesn't make much sense."
+
+@app.route("/stackarea/")
+def stackchart():
+	return render_template('stackarea.html')
+
+@app.route("/test/")
+def test():
+	return "works"
 
 	#run the app
 if __name__ == "__main__":
