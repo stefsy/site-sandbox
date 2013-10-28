@@ -1,0 +1,152 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<title>Multi-Series Line Chart</title> 
+<h1>d3 Sandbox</h1>
+
+<h2> Multi-Series Line Chart </h2>
+
+<div class = "frame">
+    <div class = "tooltip"></div>
+</div> 
+
+<p><a href="http://bl.ocks.org/mbostock/3884955">mbostock reference</a>. Mobile phone market share stats from <a href= "http://en.wikipedia.org/wiki/Mobile_operating_system#Market_share">Wikipedia/Gartner</a></p>
+
+<ul>
+    <li> area chart
+    <li> practice with axes and labeling
+    <li> map()ping flat files to json
+    <li> converting to percentages
+</ul> 
+
+<p>Notes</p>
+<ul>
+    <li> define margin and width/height as functions of margin
+    <li> <a href="https://github.com/mbostock/d3/wiki/Ordinal-Scales">d3 ordinal scales</a>
+    <li> x/y and axes are defined seperately
+    <li> svg shapes, <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes"> line and area </a>
+    <li> generators are both objects and functions (ex. path, x, y)
+    <li> loads of line interpolation options. [linear,step,basis,cardinal] etc, there exists a tension specification to further customize the interpolation
+    <li> imported numbers are strings until coerced, eg units: +d.Units
+    <li> domains must match range
+</ul> 
+
+<script>
+
+//commas for different vars, defining margin as an obj allows for . access
+var margin = {top: 20, right:20, bottom: 30, left: 50},
+	width = 960 - margin.left - margin.right, 
+	height = 500 - margin.top - margin.bottom;
+var color = d3.scale.category20();
+
+//quarters along x, percentage market share along y
+var x = d3.scale.ordinal()
+	//array of numbers width/26 FIX THIS! 
+	.range([0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,520,540,560,580,600]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var formatUnits = d3.format(",");
+
+//define axes
+var xAxis = d3.svg.axis()
+    .scale(x) //scale ordinal with range
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(formatUnits);
+
+var line = d3.svg.line()
+    .interpolate("linear")
+    .x(function(d) { return x(d.quarter); })
+    .y(function(d) { return y(d.units); });
+
+//defining canvas 
+var svg = d3.select(".frame").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+d3.csv("{{ url_for('static', filename='mobile_market.csv') }}", function(data) {
+	//d3.csv returns an array of objects. each object corresponds to a row and gives key,value pairs
+	
+	/*unpacking the ff:   
+		color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
+	get the header row. get the keys only. filter to remove the y value (in this case, data). set that as the domain of the color range. 
+	OUTCOME: assign one color per series*/
+
+	console.log(data[0]);
+	console.log(d3.keys(data[0]));
+	console.log(d3.keys(data[0]).filter(function(key) { return (key !== "Quarter" && key !== "Total Phones" && key !== "Total Smartphones"); }));
+
+	color.domain(d3.keys(data[0]).filter(function(key) { return (key !== "Quarter" && key !== "Total Phones" && key !== "Total Smartphones"); }));
+
+	//converts CSV flat format into JSON formatting. devices === data 
+	var devices = color.domain().map(function(device) { //color.domain() = domain of device names (keys)
+    	return {
+      	name: device,  //creates object with name = device name
+      	//d = full set of data. per line, returns quarter and value of d['key']
+      	//this gives 26 rows of values (or n rows) for each device name 
+      	values: data.map(function(d) { 
+        	return {quarter: d.Quarter, units: +d[device]}; //to get units for RIM only: +d.RIM
+      		})
+    	};
+  	});
+
+  	console.log(devices);
+
+  	//extent() returns min and max, but we want full set. mapping full set of ordinal values to chart. 
+  	x.domain(data.map(function(d) { return d.Quarter; }));
+  	console.log(x.domain());
+
+  	//returns the min and max of units across all objects in devices
+  	y.domain([
+    	d3.min(devices, function(c) { return d3.min(c.values, function(v) { return v.units; }); }),
+    	d3.max(devices, function(c) { return d3.max(c.values, function(v) { return v.units; }); })
+  	]);
+
+  	//creating visual elements
+  	svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+ 	svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Thousands of Units");
+
+    var manufacturer = svg.selectAll(".manufacturer")
+      .data(devices)
+    .enter().append("g")
+      .attr("class", "manufacturer");
+
+ 	manufacturer.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return color(d.name); });
+
+    //name label
+ 	manufacturer.append("text")
+      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+      .attr("transform", function(d) { return "translate(" + x(d.value.quarter) + "," + y(d.value.units) + ")"; })
+      .attr("x", 3)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; });
+
+});
+
+</script>
+
+
+{% endblock %}

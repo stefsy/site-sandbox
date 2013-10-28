@@ -46,9 +46,9 @@ def donuts():
 def womp():
 	return "It doesn't make much sense."
 
-@app.route("/stackarea/")
-def stackchart():
-	return render_template('stackarea.html')
+@app.route("/multiline/")
+def linechart():
+	return render_template('multiline.html')
 
 @app.route("/test/")
 def test():

@@ -30,8 +30,15 @@
   <li> get list of videos by likes,comments,favorites,views
   <li> multiple asynchronous calls
   <li> closures and callbacks 
-  <li> well, it works. 
 </ul> 
+
+<p> Way more than an exercise's worth of time on this. Next:</p>
+
+<ul>
+  <li> Read up on asynchronous calls and closures.
+  <li> Why did 'thisi' work for the title hack?
+  <li> Is pie() limited to only one value? Display data that's not bound to the pie chart (likes, comments, favs).
+</ul>
 
 <script>
 
@@ -126,7 +133,7 @@ $("#yt_button").click(function() {
 
   function handleplaylistdata(playlist_json,playlist_name) {
       //console.log(playlist_json);
-      console.log(playlist_name);
+      //console.log(playlist_name);
 
       //goes through playlist, gets video ids
       var vid_id = [];
@@ -177,7 +184,6 @@ $("#yt_button").click(function() {
                   g.append("path")
                     .attr("d",arc)
                     .style("fill",function(d,i) {return color(i) });
-
                 } 
               }
           }); 

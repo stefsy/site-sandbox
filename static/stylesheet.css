@@ -38,9 +38,8 @@ p 				    { font-size: 11pt; }
 /*hides the content of expand class by default. revealed via toggling*/
 /*.expand			{ display: none ; }*/
 
-.axis text {
-  font: 10px sans-serif;
-}
+.axis text  { font: 10px sans-serif; }
+
 
 .axis path,
 .axis line {
@@ -49,5 +48,7 @@ p 				    { font-size: 11pt; }
   shape-rendering: crispEdges;
 }
 
-.arc path {
-  stroke: #fff;}
+.arc path   { stroke: #fff;}
+
+.line       { fill: none; stroke: steelblue;
+              stroke-width: 1.5px; } 
