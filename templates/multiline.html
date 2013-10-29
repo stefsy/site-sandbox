@@ -4,7 +4,8 @@
 <title>Multi-Series Line Chart</title> 
 <h1>d3 Sandbox</h1>
 
-<h2> Multi-Series Line Chart </h2>
+<h2> Multi-Series Line Chart: Smartphone Sales 2007-2013 </h2>
+<p> try mousing over the lines</p>
 
 <div class = "frame">
     <div class = "tooltip"></div>
@@ -29,7 +30,15 @@
     <li> loads of line interpolation options. [linear,step,basis,cardinal] etc, there exists a tension specification to further customize the interpolation
     <li> imported numbers are strings until coerced, eg units: +d.Units
     <li> domains must match range
+    <li> text-anchors, selecting and transforming text in axes
+    <li> applying tooltips to paths
 </ul> 
+
+<style> 
+.tooltip {font-family:'Lato', sans-serif; 
+          font-size: 30px;
+          background: none;}
+</style>
 
 <script>
 
@@ -40,9 +49,15 @@ var margin = {top: 20, right:20, bottom: 30, left: 50},
 var color = d3.scale.category20();
 
 //quarters along x, percentage market share along y
+var xrange = [];
+//instead of 26, should be data.row length
+for(var i=0;i<26;i++){
+  xrange.push(i*width/26);
+}
+
 var x = d3.scale.ordinal()
 	//array of numbers width/26 FIX THIS! 
-	.range([0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,520,540,560,580,600]);
+	.range(xrange);
 
 var y = d3.scale.linear()
     .range([height, 0]);
@@ -98,23 +113,27 @@ d3.csv("{{ url_for('static', filename='mobile_market.csv') }}", function(data) {
     	};
   	});
 
-  	console.log(devices);
+	console.log(devices);
 
-  	//extent() returns min and max, but we want full set. mapping full set of ordinal values to chart. 
-  	x.domain(data.map(function(d) { return d.Quarter; }));
-  	console.log(x.domain());
+	//extent() returns min and max, but we want full set. mapping full set of ordinal values to chart. 
+	x.domain(data.map(function(d) { return d.Quarter; }));
+	console.log(x.domain());
 
-  	//returns the min and max of units across all objects in devices
-  	y.domain([
-    	d3.min(devices, function(c) { return d3.min(c.values, function(v) { return v.units; }); }),
-    	d3.max(devices, function(c) { return d3.max(c.values, function(v) { return v.units; }); })
-  	]);
+	//returns the min and max of units across all objects in devices
+	y.domain([
+  	d3.min(devices, function(c) { return d3.min(c.values, function(v) { return v.units; }); }),
+  	d3.max(devices, function(c) { return d3.max(c.values, function(v) { return v.units; }); })
+	]);
 
-  	//creating visual elements
-  	svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+	//creating visual elements
+	svg.append("g")
+    .attr("class", "x axis")
+    //transforms the axis
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    //transforms the text labels on axis
+    .selectAll("text")
+      .attr("transform", "translate (0,5) rotate(-30)");
 
  	svg.append("g")
       .attr("class", "y axis")
@@ -126,7 +145,7 @@ d3.csv("{{ url_for('static', filename='mobile_market.csv') }}", function(data) {
       .style("text-anchor", "end")
       .text("Thousands of Units");
 
-    var manufacturer = svg.selectAll(".manufacturer")
+  var manufacturer = svg.selectAll(".manufacturer")
       .data(devices)
     .enter().append("g")
       .attr("class", "manufacturer");
@@ -134,17 +153,26 @@ d3.csv("{{ url_for('static', filename='mobile_market.csv') }}", function(data) {
  	manufacturer.append("path")
       .attr("class", "line")
       .attr("d", function(d) { return line(d.values); })
-      .style("stroke", function(d) { return color(d.name); });
+      .style("stroke", function(d) { return color(d.name); })
+    .on("mouseover", mouseovered)
+    .on("mouseout", mouseouted);
 
-    //name label
- 	manufacturer.append("text")
-      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.quarter) + "," + y(d.value.units) + ")"; })
-      .attr("x", 3)
-      .attr("dy", ".35em")
-      .text(function(d) { return d.name; });
+  function mouseovered(d) {
+      d3.select(".tooltip")
+        .style("left",width/2 + "px")
+        .style("top", height/2 - 30+"px")
+        .html(d.name)
+        .style("display","inline");
+  }
+
+  function mouseouted(d) {
+    d3.select(".tooltip")
+      .transition
+      .style("display","none");
+  }
 
 });
+
 
 </script>
 
