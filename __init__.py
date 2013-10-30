@@ -50,6 +50,10 @@ def womp():
 def linechart():
 	return render_template('multiline.html')
 
+@app.route("/easeofbusinessph/")
+def easeph():
+	return render_template('easeofbusinessph.html')
+
 @app.route("/test/")
 def test():
 	return "works"
