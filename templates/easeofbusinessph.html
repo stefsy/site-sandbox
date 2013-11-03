@@ -8,24 +8,42 @@
 
 <p> data from the <a href="http://www.doingbusiness.org/Rankings/philippines/">World Bank</a>. Inspired by National Competitiveness Council roundtable <a href="http://www.rappler.com/business/28113-philippines-aims-to-jump-29-notches-in-ease-of-doing-business">on Rappler</a>.</p>
 	
-<button>Update</button> 
-
 <div class = "frame">
     <div class = "tooltip"></div>
 </div> 
 
 <ul>
-    <li> blah
-    <li> blah
-    <li> blah
+    <li> more axes
+    <li> rules on styling
 </ul> 
+
+<p>Notes</p>
+
+<ul>
+    <li> 
+    <li> 
+    <li> 
+</ul> 
+
+<p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
 
 <script>
 //commas for different vars, defining margin as an obj allows for . access
-var margin = {top: 20, right:20, bottom: 30, left: 50},
-	width = 960 - margin.left - margin.right, 
+var margin = {top: 20, bottom: 50},
+	width = 960 ,
 	height = 500 - margin.top - margin.bottom;
 var color = d3.scale.category20();
+
+console.log(margin);
+
+var svg = d3.select(".frame").append("svg")
+			.attr("height", height)
+			.attr("width", width);
+
+
+d3.json("{{ url_for('static', filename='easephdata.json') }}", function(data) {
+		console.log(data);
+}
 
 </script>
 
