@@ -1,0 +1,72 @@
+{% extends "baselayout.html" %} 
+
+{% block body %}
+
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}">
+
+<title>#reliefpatrolPH</title>
+
+<h1>Relief Patrol PH</h1>
+<br>
+
+<h2>What is #reliefpatrolPH?</h2> 
+
+<p>
+#reliefpatrolPH is an initiative that aims to guard the integrity of  delivery of donations and all
+other resources intended for Typhoon Yolanda survivors and ensure that they are distributed
+properly. #reliefpatrolPH also aims to incite action by encouraging transparency in the deployment
+and distribution of foreign aid pledged to the government and in the operations of responsible
+relief organizations. It engages the public in verifying if dispatched donations has reached
+intended recipients. Through this initiative, we will create not just a community that is responsive
+and compassionate, but also one that is vigilant and accountable. </p>
+
+<h2>Objectives</h2> 
+<ul>
+	<li><b>Report. </b> Monitor the receipt and delivery of relief goods and funds intended for
+Typhoon Yolanda survivors 
+	<li><b>Verify. </b>For citizens to send feedback on whether relief operations, goods and funds have reached the communities in need; for citizens to be able to confirm the accuracy of reported information through a mobile platform (for transmitting to the online database) 
+	<li><b>Act. </b>Spread the word: Laud effective use of the donations, or raise red flags for anomalous use of donations.
+Reports should be coordinated with the responsible relief organizations for appropriate action.
+</ul> 
+
+<p>
+  <a href = "https://docs.google.com/forms/d/15q0ZnIPPWRZgfl2dSLHQbDrYPezSj1A1CBwHG40PAQY/viewform" class="btn btn-large btn-primary" type="button">add new source</a>
+  <a href = "https://docs.google.com/forms/d/1H8795RA6LFG1vtzbg3xvpZwd3Q_Wax5lRktpSOfqPG0/viewform" class="btn btn-large btn-primary" type="button">verify</a>
+</p>
+
+<table class = "table table-hover" id="support">
+	<thead>
+		<tr>
+			<th>Donors</th>
+			<th>Assistance Offered</th>
+			<th>Channel </th>
+			<th>Type</th>
+			<th>USD</th>
+			<th>PHP conversion</th>
+		</tr>
+	</thead>
+</table>
+
+<script>
+function createTable(json) {
+    var tr; 
+    for (i = 0; i < json.feed.entry.length; i++) {
+        entry = json.feed.entry[i];
+        tr = $('<tr/>');
+        tr.append("<td>" + entry.gsx$donor.$t + "</td>");
+        tr.append("<td>" + entry.gsx$assistance.$t + "</td>");
+        tr.append("<td>" + entry.gsx$channel.$t + "</td>");
+        tr.append("<td>" + entry.gsx$type.$t + "</td>");
+        tr.append("<td>" + entry.gsx$usd.$t + "</td>");
+        tr.append("<td>" + entry.gsx$php.$t + "</td>");
+        $('#support').append(tr);
+    }
+}
+ </script>
+
+<script src="http://spreadsheets.google.com/feeds/list/0AkdNVQsq_65ydFpvUTBUWnpDcjVMZzZfbTF1WDhIQVE/1/public/values?alt=json-in-script&amp;callback=createTable"></script>
+
+
+
+
+{% endblock %}

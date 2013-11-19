@@ -54,6 +54,10 @@ def linechart():
 def easeph():
 	return render_template('easeofbusinessph.html')
 
+@app.route("/reliefpatrol/")
+def patrolph():
+	return render_template('reliefpatrol.html')
+
 @app.route("/test/")
 def test():
 	return "works"
