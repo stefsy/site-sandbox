@@ -58,6 +58,10 @@ def easeph():
 def patrolph():
 	return render_template('reliefpatrol.html')
 
+@app.route("/mapschools/")
+def mapschools():
+	return render_template('mapschools.html')
+
 @app.route("/test/")
 def test():
 	return "works"
