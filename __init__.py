@@ -2,7 +2,7 @@ from flask import Flask, request, session, g, redirect, url_for, render_template
 
 
 #configure
-DEBUG = True #DO NOT USE THIS ON PRODUCTION
+DEBUG = False #DO NOT USE THIS ON PRODUCTION
 SECRET_KEY = 'development key'
 
 #actual app creation
@@ -42,10 +42,6 @@ def channelstats():
 def donuts():
 	return render_template('donuts.html')
 
-@app.route("/life/")
-def womp():
-	return "It doesn't make much sense."
-
 @app.route("/multiline/")
 def linechart():
 	return render_template('multiline.html')
@@ -62,9 +58,13 @@ def patrolph():
 def mapschools():
 	return render_template('mapschools.html')
 
-@app.route("/test/")
-def test():
-	return "works"
+@app.route("/pyconph2014/")
+def pyconph2014():
+	return render_template('pyconph2014.html')
+
+@app.route("/life/")
+def womp():
+	return "It doesn't make much sense."	
 
 	#run the app
 if __name__ == "__main__":
