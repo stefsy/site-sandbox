@@ -1,0 +1,94 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<style>
+
+.node circle {
+  fill: #E82C0C;
+  stroke: #FF530D;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 20px 'Lato' sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #E80C7A;
+  stroke-width: 1.5px;
+}
+
+
+</style>
+
+<title>Cluster Dendrogram</title>
+<h1>Cluster Dendrogram</h1>
+
+<p> working off <a href="http://bl.ocks.org/mbostock/4063570"> mbostock's cluster dendrogram</a> to make a node-link tree</p>
+
+<div class = "frame"></div>
+
+<ul>
+    <li> cluster layout <a href="https://github.com/mbostock/d3/wiki/Cluster-Layout">documentation</a>
+    <li> d3.layout.cluster default behavior is to build tree from top down
+    <li> diagonal <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-diagonal">generator</a>
+    <li> d3 odd -- defining diagonal as a variable that is then applied as an attribute to the connectors. huh? is this a d3 thing or a js thing?
+
+</ul>
+
+<p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
+
+<script>
+    var width = 900,
+        height = 700;
+
+    var cluster = d3.layout.cluster()
+                        .size([height,width-350]); //-300 to leave room for text labels
+
+    //flip orientation
+    var diagonal = d3.svg.diagonal()
+                    .projection( function(d) { return [d.y, d.x]; });
+
+    var svg = d3.select(".frame").append("svg")
+                                    .attr("width", width)
+                                    .attr("height", height)
+                                .append("g")
+                                    //shifts whole thing to right... why doesn't it fit in frame by default?
+                                    .attr("transform", "translate(150,0)");
+
+    d3.json("{{ url_for('static', filename='fernfamily.json') }}", function(error, root) {
+        var nodes = cluster.nodes(root);
+        var links = cluster.links(nodes);
+
+        var connect = svg.selectAll(".link")
+                            .data(links)
+                        .enter().append("path")
+                            .attr("class", "link")
+                            //what kind of attribute is d?
+                            .attr("d", diagonal);
+
+        var node = svg.selectAll(".node")
+                            .data(nodes)
+                        .enter().append("g")
+                            .attr("class","node")
+                            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+        node.append("circle")
+            .attr("r",3.5);
+
+        node.append("text")
+            .attr("dx", function(d) { return d.children ? -8: 8; })
+            .attr("dy", 3)
+            .style("text-anchor", function(d) { return d.children ? "end": "start";})
+            .text(function(d) { return d.name; });
+
+    //d3.select(self.frameElement).style("height", height + "px");
+
+    });
+
+
+</script>
+
+
+{% endblock %}

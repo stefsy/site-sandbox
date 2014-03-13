@@ -3,15 +3,15 @@
 
 <title>Bad Nodes</title>
 <h1>d3 Sandbox</h1>
-<h2>Fun with Nodes </h2> 
+<h2>Fun with Nodes </h2>
 
 <p> force directed node graph of Breaking Bad characters. <br>
-    data loaded from json.     <br> 
+    data loaded from json.     <br>
     <a href = 'http://bost.ocks.org/mike/fisheye/'> mbostock fisheye</a></p>
 
 <div class = "frame">
     <div class = "tooltip"></div>
-</div> 
+</div>
 
 <p> tooltip surprisingly tough to conceptualize, then it's so obvious.
 </p>
@@ -22,19 +22,19 @@
 <script>
 //create chart space
 
-var width = 900; 
-var height = 500; 
-var color = d3.scale.category20();                
+var width = 900;
+var height = 500;
+var color = d3.scale.category20();
 
 var svg = d3.selectAll(".frame").append("svg")
                 .attr("width",width)
                 .attr("height",height);
 
-//defines the force graph, change charge and linkDistance 
+//defines the force graph, change charge and linkDistance
 var force = d3.layout.force()
                 .charge(-400)
                 .linkDistance(75)
-                .size([width,height]); 
+                .size([width,height]);
 
 //define data
 d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
@@ -48,7 +48,7 @@ d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
     // Run the layout a fixed number of times.
     // where i is the number of times the layout runs
     //really interesting read up on this. behavior changes a lot from i=0
-    //to i = 100 asymptotically?  
+    //to i = 100 asymptotically?
     force.start();
     for (var i = n*100; i > 0; --i) force.tick();
     force.stop();
@@ -79,9 +79,9 @@ d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
         .attr("r", 8)
         .style("fill", function(d) { return color(d.group); })
         .call(force.drag);
- 
+
     //change the attributes of pre-existing elements
-    var tooltips = svg.selectAll(".node")    
+    var tooltips = svg.selectAll(".node")
         .on("mouseover", function(d,i) {
             d3.select(node[0][i])
                 .attr("r", 12);
@@ -90,7 +90,7 @@ d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
                 .style("top",d.y - 30 +"px")
                 .html(d.name + " " + d.group)
                 .style("display","inline");
-        })      
+        })
         .on("mouseout", function(d,i){
             d3.select(node[0][i])
                 .attr("r",8);
@@ -99,7 +99,6 @@ d3.json("{{ url_for('static', filename='abq.json') }}", function(data) {
         });
 
 });
-	
-</script>
 
+</script>
 {% endblock %}

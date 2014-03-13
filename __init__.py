@@ -2,7 +2,7 @@ from flask import Flask, request, session, g, redirect, url_for, render_template
 
 
 #configure
-DEBUG = False #DO NOT USE THIS ON PRODUCTION
+DEBUG = True #DO NOT USE THIS ON PRODUCTION
 SECRET_KEY = 'development key'
 
 #actual app creation
@@ -20,7 +20,7 @@ def homepage():
 #route generates URLS
 @app.route("/learnbydoing/")
 def learnbydoing():
- 	return render_template('learnbydoing.html') 
+ 	return render_template('learnbydoing.html')
 
 @app.route("/rects/")
 def rects():
@@ -62,11 +62,14 @@ def mapschools():
 def pyconph2014():
 	return render_template('pyconph2014.html')
 
+@app.route("/ferns/")
+def ferns():
+	return render_template('ferns.html')
+
 @app.route("/life/")
 def womp():
-	return "It doesn't make much sense."	
+	return "It doesn't make much sense."
 
 	#run the app
 if __name__ == "__main__":
 	app.run()
-

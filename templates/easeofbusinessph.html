@@ -1,29 +1,29 @@
 {% extends "baselayout.html" %}
 {% block body %}
 
-<title>title</title> 
+<title>title</title>
 <h1>d3 Sandbox</h1>
 
 <h2> Ease of Doing Business PH </h2>
 
 <p> data from the <a href="http://www.doingbusiness.org/Rankings/philippines/">World Bank</a>. Inspired by National Competitiveness Council roundtable <a href="http://www.rappler.com/business/28113-philippines-aims-to-jump-29-notches-in-ease-of-doing-business">on Rappler</a>.</p>
-	
+
 <div class = "frame">
     <div class = "tooltip"></div>
-</div> 
+</div>
 
 <ul>
     <li> more axes
     <li> rules on styling
-</ul> 
+</ul>
 
 <p>Notes</p>
 
 <ul>
-    <li> 
-    <li> 
-    <li> 
-</ul> 
+    <li>
+    <li>
+    <li>
+</ul>
 
 <p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
 
@@ -43,7 +43,7 @@ var svg = d3.select(".frame").append("svg")
 
 d3.json("{{ url_for('static', filename='easephdata.json') }}", function(data) {
 		console.log(data);
-}
+});
 
 </script>
 
