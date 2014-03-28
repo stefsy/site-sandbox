@@ -66,6 +66,10 @@ def pyconph2014():
 def ferns():
 	return render_template('ferns.html')
 
+@app.route("/hexbins/")
+def hexbins():
+	return render_template('hexbins.html')
+
 @app.route("/life/")
 def womp():
 	return "It doesn't make much sense."
