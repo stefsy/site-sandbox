@@ -70,6 +70,14 @@ def ferns():
 def hexbins():
 	return render_template('hexbins.html')
 
+@app.route("/mm_sketch/")
+def mm_sketch():
+	return render_template('mm_sketch.html')
+
+@app.route("/zoomtree/")
+def zoomtree():
+	return render_template('zoomtree.html')
+
 @app.route("/life/")
 def womp():
 	return "It doesn't make much sense."

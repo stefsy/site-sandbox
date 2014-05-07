@@ -33,9 +33,9 @@
 
 <div class = "frame">
     <div class = "tooltip"></div>
-</div> 
+</div>
 
-<p><a href = "http://bl.ocks.org/mbostock/3885705"> mbostock</a>  as a starting point. <br> 
+<p><a href = "http://bl.ocks.org/mbostock/3885705"> mbostock</a>  as a starting point. <br>
      labor figures from the <a href = "http://data.worldbank.org/indicator/SL.TLF.TOTL.IN">  World Bank's excellent indicator API. </a> </p>
 
 <p> surprisingly tough to work with labeling axes. the data manipulation was much easier than the visual display. practice more with axes, and with g. </p>
@@ -43,11 +43,11 @@
 <ul>
 	<li>?dynamically labeling axes
 	<li>?ordinal scaling the x attribute
-	<li>scaling numbers to fit graph 
-	<li>creating visible axes 
-	<li>resorting arrays 
-	<li>grouping elements together with 'g' 
-	<li>better tooltips	
+	<li>scaling numbers to fit graph
+	<li>creating visible axes
+	<li>resorting arrays
+	<li>grouping elements together with 'g'
+	<li>better tooltips
 </ul>
 
 <script>
@@ -55,7 +55,7 @@
 /*setting up svg*/
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;               
+    height = 400 - margin.top - margin.bottom;
 
 var svg = d3.select(".frame").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -64,7 +64,7 @@ var svg = d3.select(".frame").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 /*frame formatting*/
-var color = d3.scale.category20(); 
+var color = d3.scale.category20();
 
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1, 1);
@@ -82,7 +82,7 @@ var yAxis = d3.svg.axis()
     .orient("left")
     .tickFormat(d3.format("f"));
 
-/*g is a grouping mechanism for svg*/    
+/*g is a grouping mechanism for svg*/
 svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -92,7 +92,7 @@ svg.append("g")
       .attr("class", "y axis")
       .call(yAxis);
 
-d3.json("{{ url_for('static', filename='countries.json') }}", function(data) { 
+d3.json("{{ url_for('static', filename='countries.json') }}", function(data) {
 
 /*data initial entry*/
 	svg.selectAll(".rect")
@@ -106,20 +106,20 @@ d3.json("{{ url_for('static', filename='countries.json') }}", function(data) {
 		.style("fill", function(d) { return color(d.Zone); } );
 
 /*tooltip hover*/
-	var tooltips = svg.selectAll(".rect")    
+	var tooltips = svg.selectAll(".rect")
      .on("mouseover", function(d,i) {
          d3.select(".tooltip")
              .style("left", i*55 +"px")
              .style("top", height/2 + "px")
              .html(d.Country + " <br>" + d.Workers +"m <br>" + d.Zone)
              .style("display","inline");
-     })      
+     })
      .on("mouseout", function(d,i){
          d3.select(".tooltip")
              .style("display","none");
      });
 
-/*Click!*/ 
+/*Click!*/
       d3.select("button").on("click", function() {
 
       	/*best practice use a staggered delay*/
@@ -127,14 +127,14 @@ d3.json("{{ url_for('static', filename='countries.json') }}", function(data) {
 
       	var sortData = data.Countries.sort(function(a,b) {
       		return a.Workers - b.Workers;
-      	}); 
+      	});
 
       	/*this solution rebinds a new set of data to the rects
-      	and then changes the height of each rect in place*/ 
+      	and then changes the height of each rect in place*/
 
       	d3.selectAll(".rect")
       		.data(sortData)
-      		/* why does it work if i don't call update() */ 
+      		/* why does it work if i don't call update() */
       		.transition()
       		.attr("y", function(d) {return height - y(d.Workers); })
 			    .attr("height", function(d) {return y(d.Workers); })
