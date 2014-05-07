@@ -2,8 +2,7 @@ from flask import Flask, request, session, g, redirect, url_for, render_template
 
 
 #configure
-DEBUG = True #DO NOT USE THIS ON PRODUCTION
-SECRET_KEY = 'development key'
+DEBUG = False #DO NOT USE THIS ON PRODUCTION
 
 #actual app creation
 app = Flask(__name__)
@@ -18,6 +17,10 @@ def homepage():
 	return render_template('homepage.html')
 
 #route generates URLS
+@app.route("/mm_sketch/")
+def mm_sketch():
+	return render_template('mm_sketch.html')
+	
 @app.route("/learnbydoing/")
 def learnbydoing():
  	return render_template('learnbydoing.html')
@@ -69,10 +72,6 @@ def ferns():
 @app.route("/hexbins/")
 def hexbins():
 	return render_template('hexbins.html')
-
-@app.route("/mm_sketch/")
-def mm_sketch():
-	return render_template('mm_sketch.html')
 
 @app.route("/zoomtree/")
 def zoomtree():
