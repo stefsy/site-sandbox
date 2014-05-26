@@ -2,7 +2,7 @@ from flask import Flask, request, session, g, redirect, url_for, render_template
 
 
 #configure
-DEBUG = False #DO NOT USE THIS ON PRODUCTION
+#DEBUG = False #DO NOT USE THIS ON PRODUCTION
 
 #actual app creation
 app = Flask(__name__)
@@ -85,6 +85,10 @@ def ds_toolkit():
 def womp():
 	return "It doesn't make much sense."
 
+@app.route("/bork/")
+def bork():
+	return "bork bork bork"
+
 	#run the app
 if __name__ == "__main__":
-	app.run()
+	app.run(debug=True)
