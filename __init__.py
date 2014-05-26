@@ -85,9 +85,9 @@ def ds_toolkit():
 def womp():
 	return "It doesn't make much sense."
 
-@app.route("/bork/")
-def bork():
-	return "bork bork bork"
+@app.route("/wark/")
+def wark():
+	return "bork bork wark bork"
 
 	#run the app
 if __name__ == "__main__":
