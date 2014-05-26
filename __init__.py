@@ -77,6 +77,10 @@ def hexbins():
 def zoomtree():
 	return render_template('zoomtree.html')
 
+@app.route("/ds_toolkit/")
+def ds_toolkit():
+	return render_template('ds_may2014.html')
+
 @app.route("/life/")
 def womp():
 	return "It doesn't make much sense."

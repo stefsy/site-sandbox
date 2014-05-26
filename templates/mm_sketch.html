@@ -1,15 +1,16 @@
 {% extends "baselayout.html" %}
 {% block body %}
 
-<title>Mattermark Sample</title> 
+<title>Scatterplot</title>
 <h1>d3 Sandbox</h1>
 
 <h2> Bonifacio Ventures Portfolio </h2>
 <p> mouse over to see startup name and score</p>
 
+<button> click </button>
 <div class = "frame">
     <div class = "tooltip"></div>
-</div> 
+</div>
 
 <p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
 
@@ -18,7 +19,7 @@
 .tooltip {
   background: none;
   font-size:25px;
-  font-family: Lato; 
+  font-family: Lato;
 };
 
 .axis path,
@@ -46,6 +47,7 @@ var y = d3.scale.linear()
     .range([height, 0]);
 
 var color = d3.scale.category10();
+var moneyformat = d3.format("$0,000");
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -65,6 +67,7 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
   data.forEach(function(d) {
     d.score = +d.score;
     d.series = +d.series;
+    d.revenue = Math.floor(Math.random() * 100000);
   });
 
   x.domain([0,5]);
@@ -90,7 +93,7 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Mattermark Score")
+      .text("Investability Index")
 
   svg.selectAll(".dot")
       .data(data)
@@ -125,13 +128,29 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
         d3.select(".tooltip")
             .style("left", width/2 -100 +"px")
             .style("top", height/2 +"px")
-            .html(d.name + "<br> Mattermark Score: " + d.score)
+            .html(d.name + "<br>Investor Score: " + d.score + "<br>MRR: " + moneyformat(d.revenue))
             .style("display","inline");
     })
     .on("mouseout", function(d,i){
         d3.select(".tooltip")
             .style("display","none");
     });
+
+    d3.select("button").on("click", function() {
+
+        /*best practice use a staggered delay*/
+        var delay = function(d, i) { return i * 50; };
+
+        console.log("click");
+        /* on click change bottom axis and resort dots*/
+
+        d3.selectAll(".dot")
+            .transition()
+            /*change x scale to new bottom axis scale!*/ 
+            .attr("cy", function(d) { return x(d.revenue); })
+              .duration(delay);
+
+});
 
 });
 
