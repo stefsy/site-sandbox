@@ -2,7 +2,7 @@ from flask import Flask, request, session, g, redirect, url_for, render_template
 
 
 #configure
-#DEBUG = False #DO NOT USE THIS ON PRODUCTION
+DEBUG = False #DO NOT USE THIS ON PRODUCTION
 
 #actual app creation
 app = Flask(__name__)
@@ -91,4 +91,4 @@ def wark():
 
 	#run the app
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.run()

@@ -5,10 +5,14 @@
 <h1>d3 Sandbox</h1>
 
 <h2> Bonifacio Ventures Portfolio </h2>
-<p> mouse over to see startup name and score</p>
+<p> mouse over to see name and score. click to shift between funding round and monthly recurring revenue.</p>
 
-<button> click </button>
-<div class = "frame">
+<!-- no something is going wrong with boostrap and font awesome integration! -->
+<div class="btn-group">
+  <button type="button" class="btn btn-default" id="fround">Funding Round</button>
+  <button type="button" class="btn btn-default" id="bmrr">Monthly Recurring Revenue</button>
+  
+</div><div class = "frame">
     <div class = "tooltip"></div>
 </div>
 
@@ -67,18 +71,18 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
   data.forEach(function(d) {
     d.score = +d.score;
     d.series = +d.series;
-    d.revenue = Math.floor(Math.random() * 100000);
+    d.revenue = +d.mrr;
   });
 
   x.domain([0,5]);
-  y.domain(d3.extent(data, function(d) { return d.score; })).nice();
+  y.domain(d3.extent(data, function(d) {return d.score; })).nice();
 
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
     .append("text")
-      .attr("class", "label")
+      .attr("class", "xlabel")
       .attr("x", width)
       .attr("y", -6)
       .style("text-anchor", "end")
@@ -88,7 +92,7 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
       .attr("class", "y axis")
       .call(yAxis)
     .append("text")
-      .attr("class", "label")
+      .attr("class", "ylabel")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", ".71em")
@@ -121,7 +125,7 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "end")
-      .text(function(d) { return d; });
+      .text(function(d) { return d + " Round"; });
 
   var tooltips = svg.selectAll(".dot")
     .on("mouseover", function(d,i) {
@@ -136,21 +140,41 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
             .style("display","none");
     });
 
-    d3.select("button").on("click", function() {
+    d3.select("#bmrr").on("click", function() {
 
-        /*best practice use a staggered delay*/
-        var delay = function(d, i) { return i * 50; };
-
-        console.log("click");
+        <!-- totally inconsistent patterns for select lets be real i'm not fixing this --> 
+        x.domain([0,d3.max(data,function (d) { return +d.mrr;})]);
+        console.log(d3.max(data,function(d){return +d.mrr;}));
+        var t = svg.transition().duration(4000);
+        t.select(".x.axis")
+           .call(xAxis);
         /* on click change bottom axis and resort dots*/
-
         d3.selectAll(".dot")
             .transition()
             /*change x scale to new bottom axis scale!*/ 
-            .attr("cy", function(d) { return x(d.revenue); })
-              .duration(delay);
+            .attr("cx", function(d) { return x(d.revenue); })
+              .duration(5000);
+        svg.select(".xlabel").text("Monthly Recurring Revenue");
 
-});
+    });
+
+    d3.select("#fround").on("click", function() {
+      /* i should really just make a function to generate the graph vs doing it twice */
+
+        x.domain([0,d3.max(data,function (d) { return +d.series;})]);
+        console.log(d3.max(data,function(d){return +d.series;}));
+        var t = svg.transition().duration(4000);
+        t.select(".x.axis")
+           .call(xAxis);
+        /* on click change bottom axis and resort dots*/
+        d3.selectAll(".dot")
+            .transition()
+            /*change x scale to new bottom axis scale!*/ 
+            .attr("cx", function(d) { return x(d.series); })
+              .duration(5000);
+        svg.select(".xlabel").text("Funding Round");
+
+    });
 
 });
 
