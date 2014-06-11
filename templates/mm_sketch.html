@@ -16,7 +16,15 @@
     <div class = "tooltip"></div>
 </div>
 
-<p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
+<ul>
+  <li> dedicated to Dave C, one super cool and hella smart guy. 
+  <li> d3.axis will adjust if you change the domain then .call(xAxis)
+  <li> select("labelid").text("and override the existing label")
+  <li> boostrap buttons
+</ul> 
+
+
+<p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
 
 <style>
 
@@ -42,7 +50,7 @@
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 480 - margin.top - margin.bottom;
 
 var x = d3.scale.linear()
     .range([0, width]);
@@ -131,7 +139,7 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
     .on("mouseover", function(d,i) {
         d3.select(".tooltip")
             .style("left", width/2 -100 +"px")
-            .style("top", height/2 +"px")
+            .style("top", height/2 + 50 +"px")
             .html(d.name + "<br>Investor Score: " + d.score + "<br>MRR: " + moneyformat(d.revenue))
             .style("display","inline");
     })

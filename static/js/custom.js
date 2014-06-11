@@ -1,7 +1,8 @@
 $(document).ready( function() {
 
-	$('#proj').click(function() {
-		$('.expand').toggle('normal');
-		}); 
+	// cute pointless bit of jq
+	//  $('#proj').click(function() {
+	// 	$('.expand').toggle('normal');
+	// 	});
 		
 }); 
