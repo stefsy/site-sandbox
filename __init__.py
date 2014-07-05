@@ -81,6 +81,10 @@ def zoomtree():
 def ds_toolkit():
 	return render_template('ds_may2014.html')
 
+@app.route("/pandas_devcon/")
+def pandas_devcon():
+	return render_template('pandas_devcon_july2014.html')
+
 @app.route("/life/")
 def womp():
 	return "It doesn't make much sense."
