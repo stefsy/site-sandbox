@@ -20,7 +20,7 @@ def homepage():
 @app.route("/mm_sketch/")
 def mm_sketch():
 	return render_template('mm_sketch.html')
-	
+
 @app.route("/learnbydoing/")
 def learnbydoing():
  	return render_template('learnbydoing.html')
@@ -76,6 +76,10 @@ def hexbins():
 @app.route("/zoomtree/")
 def zoomtree():
 	return render_template('zoomtree.html')
+
+@app.route("/git-time-machine")
+def timemachine():
+	return render_template('timemachine.html')
 
 @app.route("/ds_toolkit/")
 def ds_toolkit():

@@ -4,16 +4,16 @@
 <title>Colorful Bars</title>
 <h1>d3 Sandbox</h1>
 
-<h2>Fun with Random Rectanges</h2> 
-	
-<button>Update</button> 
+<h2>Fun with Random Rectanges</h2>
+
+<button>Update</button>
 <div class = "box"> </div>
 
 <ul>
     <li> bar charts
     <li> randomly generated data
     <li> enter(), update(), and exit() transitions
-</ul> 
+</ul>
 
 <p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
 
@@ -38,14 +38,14 @@
 
 	chart.selectAll("rect")
 		.data(initData)
-		.enter().append("rect")	
+		.enter().append("rect")
 			.attr("y", function(d,i) { return i*20; })
      		.attr("width",x)
      		.attr("height",20)
             .style("fill", function(d,i) { return color(i);} );
 
 
-//black line on y-axis 
+//black line on y-axis
     chart.append("line")
     	.attr("y1",0)
     	.attr("y2", 20*initData.length)
@@ -62,7 +62,7 @@
         };
 
     	var up = chart.selectAll("rect")
-    				.data(newData); 
+    				.data(newData);
 
         //1. exit
         up.exit()

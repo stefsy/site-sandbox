@@ -5,7 +5,7 @@
 .output_text { font-family: Lato; font-size: 30px; }
 </style>
 
-<title>YouTube Channel Stats</title> 
+<title>YouTube Channel Stats</title>
 <h1>d3 Sandbox</h1>
 
 
@@ -15,41 +15,41 @@
 
 <form>
 	<textarea id="yt_channelid" placeholder = "lizziebennet"></textarea>
-</form> 
+</form>
 
-<button id= "yt_button">go</button> 
+<button id= "yt_button">go</button>
 
 <!-- ok so this works in the sense that the correct key loads into this div
 <div id="ARGH"></div> -->
 
 <div class = "frame">
-</div> 
+</div>
 
-<p> <a href="http://bl.ocks.org/mbostock/1346395">mbostock reference</a>  </p> 
+<p> <a href="http://bl.ocks.org/mbostock/1346395">mbostock reference</a>  </p>
 
 <ul>
 	<li> YouTube Data API v3
-	<li> .gitignore developer keys - but how to import it securely? 
-	<li> jquery forms 
+	<li> .gitignore developer keys - but how to import it securely?
+	<li> jquery forms
   <li> handling json w/jquery
   <li> d3 formatting - a function that's called as a var
   <li> applying a mix of d3 and jquery effects
-</ul> 
+</ul>
 
 <p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
 
 <script>
 
 //create chart variables
-var width = 900; 
-var height = 300; 
+var width = 900;
+var height = 300;
 var radius = Math.min(width,height)/2;
-var color = d3.scale.category20();     
-var formatter = d3.format(",");  
+var color = d3.scale.category20();
+var formatter = d3.format(",");
 
 var svg = d3.select(".frame").append("svg")
   .attr("width", width)
-  .attr("height", height);       
+  .attr("height", height);
 
   svg.append("text")
         .attr("x", 50)
@@ -91,7 +91,7 @@ $("#yt_button").click(function() {
 
   var yt_channel = $("#yt_channelid").val();
 
-  // what the hell am i doing here. 
+  // what the hell am i doing here.
   /*$.get("{{ url_for('static', filename='yt_v3.txt') }}", function(error, data){
   }, 'text');
 
@@ -101,12 +101,12 @@ $("#yt_button").click(function() {
   // why is reading a text file as a var so hard??? god damn, just HAVE my dev key
   var yt_key = 'AIzaSyDQH6ODAQdQ1yaxRY2xTK8krBIElQQ6KoM';
 
-  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&forUsername=' + yt_channel + '&key=' + yt_key; 
+  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&forUsername=' + yt_channel + '&key=' + yt_key;
 
   $.getJSON(channel_gen_url)
       .done(function( json ) {
         console.log(json.items[0]);
-  
+
         $('#cname').text(json.items[0]['snippet']['title']);
         $('#vids').text("Videos " + formatter(json.items[0]['statistics']['videoCount']));
         $('#views').text("Views " + formatter(json.items[0]['statistics']['viewCount']));
@@ -114,7 +114,7 @@ $("#yt_button").click(function() {
         $('#comm').text("Comments " + formatter(json.items[0]['statistics']['commentCount']));
       });
 
-}); 
+});
 
 
 </script>
