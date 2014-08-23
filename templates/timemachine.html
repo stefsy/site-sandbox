@@ -4,13 +4,22 @@
 <style>
     body { font-family: 'Lato', sans-serif; color: #3d3d3d; margin: 0; }
 
-    .tooltip 		{      background: azure; opacity: 0.9;
+    .helpbox 		{      border: 1px solid #f93;
                            padding: 2px;
-                           font-size: 15px; text-align: center;
-                           display:none; position:absolute;
+                           font-size: 15px;
+                           text-align: center;
+                           word-wrap:break-word;
+                           position:absolute;
+                           width: 200px;
+                           height: 400px;
+                           left: 800px;
+                           display:none; /*only if you want not shown by default*/
                            }
-    .bars:hover { fill: #23879e; }
-
+    .nameText { }
+    .countText { font-size: 12px; }
+    .dates          {       width: 100%;
+                            height: 30px; }
+    .month {}
 
 </style>
 
@@ -18,10 +27,10 @@
 <h1>Git Time Machine</h1>
 
 <br>
-<h2> The greatest hits from 2012 to today </h2>
+<h2> GitHub's trendiest repos from 2012 to today </h2>
 <br>
 
-<div class="btn-toolbar" role="toolbar">
+<!-- <div class="btn-toolbar" role="toolbar">
     <div class="btn-group">
       <button type="button" id='2012-03' class="btn btn-default">Mar</button>
       <button type="button" id="2012-04" class="btn btn-default">Apr</button>
@@ -44,15 +53,17 @@
         <button type="button" class="btn btn-default">Middle</button>
         <button type="button" class="btn btn-default">Right</button>
     </div>
-</div>
+</div> -->
 
 
 
+<div class = "dates"></div>
 <div class = "frame">
-    <div class = "tooltip"></div>
+    <div class = "helpbox">
+    </div>
 </div>
 
-<p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- see more d3.js blocks</a></p>
+<p style="font-size:11px"><a href="{{url_for('homepage')}}"> <-- go home</a></p>
 
 <script>
     var width = 800,
@@ -63,13 +74,80 @@
     var nCols = 10;
     var color = d3.scale.category20();
 
+// move to own file later!
+    var dateData = { "dates" : [
+            {"date": "2012-03", "display": "Mar \n 2012"},
+            {"date": "2012-04", "display": "Apr \n 2012"},
+            {"date": "2012-05", "display": "May \n 2012"},
+            {"date": "2012-06", "display": "Jun \n 2012"},
+            {"date": "2012-07", "display": "Jul \n 2012"},
+            {"date": "2012-08", "display": "Aug \n 2012"},
+            {"date": "2012-09", "display": "Sep \n 2012"},
+            {"date": "2012-10", "display": "Oct \n 2012"},
+            {"date": "2012-11", "display": "Nov \n 2012"},
+            {"date": "2012-12", "display": "Dec \n 2012"},
+            {"date": "2013-01", "display": "Jan \n 2013"},
+            {"date": "2013-02", "display": "Feb \n 2013"},
+            {"date": "2013-03", "display": "Mar \n 2013"},
+            {"date": "2013-04", "display": "Apr \n 2013"},
+            {"date": "2013-05", "display": "May \n 2013"},
+            {"date": "2013-06", "display": "Jun \n 2013"},
+            {"date": "2013-07", "display": "Jul \n 2013"},
+            {"date": "2013-08", "display": "Aug \n 2013"},
+            {"date": "2013-09", "display": "Sep \n 2013"},
+            {"date": "2013-10", "display": "Oct \n 2013"},
+            {"date": "2013-11", "display": "Nov \n 2013"},
+            {"date": "2013-12", "display": "Dec \n 2013"},
+            {"date": "2014-01", "display": "Jan \n 2014"},
+            {"date": "2014-02", "display": "Feb \n 2014"},
+            {"date": "2014-03", "display": "Mar \n 2014"},
+            {"date": "2014-04", "display": "Apr \n 2014"},
+            {"date": "2014-05", "display": "May \n 2014"},
+            {"date": "2014-06", "display": "Jun \n 2014"},
+            {"date": "2014-07", "display": "Jul \n 2014"}
+        ]}
+
     var chart = d3.selectAll(".frame").append("svg")
                 .attr("width", width)
                 .attr("height", height);
-                // remove this later, for estimation only
-                // .style('background','steelblue');
 
     var defaultFilter ='2012-03';
+
+    var date = d3.selectAll(".dates").append("svg")
+                .attr("width",width + 200)
+                .attr("height", 50);
+
+    var dateline = date.append("line")
+        .attr("x1", 25)
+        .attr("y1", 25)
+        .attr("x2", 100)
+        .attr("y2", 25)
+        .style("stroke", '#999')
+        .style("stroke-width", 1);
+
+    dateline.transition()
+        .attr("x2", 970)
+        .duration(1000);
+
+    var circ = date.selectAll(".month")
+            .data(dateData.dates)
+        .enter().append("circle")
+            .attr("class", "circ")
+            .attr("id", function(d) { return d.date; })
+            .attr("cx", function(d,i) { return i * 33.50 + 30; })
+            .attr("cy", 25)
+            .attr("r", 5)
+            .style("fill", "5067bd" )
+        .filter(function(d) {return d.date.substr(0,4) !== '2012';})
+            .style("fill", "409cb1" )
+        .filter(function(d) {return d.date.substr(0,4) === '2014';})
+            .style("fill", "46cb69" );
+            // slightly hacky , v. proud.
+            // initially filters data from (2012,2013,2014) to (2013,2014), apply color 2
+            // then filters (2013,2014) for 2014 and applies color 3
+
+
+
 
 d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(error, data) {
 
@@ -85,7 +163,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
     var rect = chart.selectAll("rect")
         .data(data)
         .enter().append("rect")
-            .filter(function(d) {return d.month == defaultFilter;})
+            .filter(function(d) {return d.month === defaultFilter;})
                 .attr("class","bars")
                 .attr("y", function(d,i) { return i * (colHt + 2) ; })
                 .attr("width",0)
@@ -97,40 +175,81 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
         .attr("width", function(d) { return x(d.new_stars);})
         .duration(800);
 
-    var nameText = chart.selectAll("text")
+    var nameText = chart.selectAll("nameText")
         .data(data)
         .enter().append("text")
-            .filter(function(d) {return d.month == defaultFilter;})
+            .filter(function(d) {return d.month === defaultFilter;})
+            .attr("class","nameText")
             .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
             .attr("x", 10 )
             .text( function(d) {  return d.repository_name;} );
 
+    var countText = chart.selectAll("countText")
+        .data(data)
+        .enter().append("text")
+            .filter(function(d) {return d.month === defaultFilter;})
+            .attr("class","countText")
+            .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
+            //this next line makes sure text doesn't overlap w/ labels
+            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 160 ? x(d.new_stars) + 10 : 160 ;}  )
+            .text( function(d) {  return String(d.new_stars);} );
+
+    //change the attributes of pre-existing elements
+    var tooltips = chart.selectAll(".bars")
+        .on("mouseover", function(d,i) {
+            d3.select(this)
+                .style("fill","#f93");
+            d3.select(".helpbox")
+                .style("left","800px")
+                .style("top",d.y - 30 +"px")
+                .style("display","inline")
+                .html( "<br><h2>" + d.repository_name + "</h2> <br> \
+                <a href=" + d.repository_url + ">go to the repo</a> <br> \
+                <p>" + d.repository_name + " was \
+                starred " + d.new_stars + " times this month. </p> ");
+        })
+        .on("mouseout", function(d,i){
+            d3.select(rect[0][i])
+                .style("fill","#999");
+            //d3.select(".helpbox")
+            //    .style("display","none");
+        });
 
 
- $('button').click(function(){
+
+ $('.circ').click(function(){
      //`this` gives me all attributes of the button
     //  console.log(this);
      //`this.id` gives me the id, which i can use to filter!! but its not matching...
-     console.log(String(this.id));
+    //  console.log(String(this.id));
 
      //omg in javascript == and === are not the same
     //  console.log(String(this.id) === defaultFilter);
 
     var newFilter = String(this.id);
 
-    rect.data(data.filter(function(d) {console.log(d[0]); return d.month === newFilter;}))
+    var timer = 500;
+
+    rect.data(data.filter(function(d) { return d.month === newFilter;}))
         .transition()
             .attr("y", function(d,i) { return i * (colHt + 2) ; })
             .attr("width", function(d) { return x(d.new_stars);})
             .attr("height", colHt )
             .style("fill", "#999")
-            .duration(500);
+            .duration(timer);
 
     // to get a subset, filter in here
     nameText.data(data.filter(function(d) {return d.month === newFilter;}))
             .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
             .attr("x", 10)
             .text( function(d) {  return d.repository_name;} );
+
+    countText.data(data.filter(function(d) {return d.month === newFilter;}))
+        .transition()
+            .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
+            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 160 ? x(d.new_stars) + 10 : 160 ;}  )
+            .text( function(d) {  return String(d.new_stars);} )
+        .duration(timer);
 
 
  });
