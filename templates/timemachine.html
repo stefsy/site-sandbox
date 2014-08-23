@@ -3,6 +3,15 @@
 
 <style>
     body { font-family: 'Lato', sans-serif; color: #3d3d3d; margin: 0; }
+
+    .tooltip 		{      background: azure; opacity: 0.9;
+                           padding: 2px;
+                           font-size: 15px; text-align: center;
+                           display:none; position:absolute;
+                           }
+    .bars:hover { fill: #23879e; }
+
+
 </style>
 
 <title>Git Time Machine</title>
@@ -77,6 +86,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
         .data(data)
         .enter().append("rect")
             .filter(function(d) {return d.month == defaultFilter;})
+                .attr("class","bars")
                 .attr("y", function(d,i) { return i * (colHt + 2) ; })
                 .attr("width",0)
                 .attr("height", colHt )
@@ -108,8 +118,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
 
     var newFilter = String(this.id);
 
-    var rct = chart.selectAll("rect")
-        .data(data.filter(function(d) {console.log(d[0]); return d.month === newFilter;}))
+    rect.data(data.filter(function(d) {console.log(d[0]); return d.month === newFilter;}))
         .transition()
             .attr("y", function(d,i) { return i * (colHt + 2) ; })
             .attr("width", function(d) { return x(d.new_stars);})
@@ -117,17 +126,11 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
             .style("fill", "#999")
             .duration(500);
 
-    var txt = chart.selectAll("text")
     // to get a subset, filter in here
-       .data(data.filter(function(d) {return d.month === newFilter;}));
-
-
-    txt.attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
+    nameText.data(data.filter(function(d) {return d.month === newFilter;}))
+            .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
             .attr("x", 10)
             .text( function(d) {  return d.repository_name;} );
-
-    txt.exit().remove();
-
 
 
  });
