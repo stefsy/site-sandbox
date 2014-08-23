@@ -2,10 +2,11 @@
 <meta charset="utf-8">
 <!-- base layout class that other html layouts will inherit from -->
 
-<head> 
+<head>
 	<meta name="description" content="Stephanie Sy. Building data tools and companies in Manila, Philippines. Silicon Valley balikbayan."/>
-	<!-- oh no this is all going so wrong --> 
-	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+	<!-- oh no this is all going so wrong -->
+	<!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet"> -->
+	<link href="{{ url_for('static', filename='css/font-awesome.css')  }}" rel="stylesheet">
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 	<link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic|PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/stylesheet.css') }}">
@@ -20,18 +21,18 @@
   	ga('send', 'pageview');
 
 	</script>
-</head> 
+</head>
 
 <div class="page">
 	{% for message in get_flashed_messages() %}
 		<div class=flash> {{ message }} </div>
 	{% endfor %}
 	<!-- here is where the child templates will extend from -->
-	{% block body %} 
+	{% block body %}
 
 	{% endblock %}
 
-<div class= "icon-bar"> 
+<div class= "icon-bar">
 	<a href="http://www.twitter.com/stefsy"><i class="fa fa-twitter fa-3x"></i></a>
 	<a href="http://www.github.com/stefsy"><i class="fa fa-github fa-3x"></i></a>
 </div>

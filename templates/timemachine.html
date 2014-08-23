@@ -4,6 +4,9 @@
 <style>
     body { font-family: 'Lato', sans-serif; color: #3d3d3d; margin: 0; }
 
+    .dates { margin-bottom: 30px; margin-top: 50px; }
+
+
     .helpbox 		{      border: 1px solid #f93;
                            padding: 2px;
                            font-size: 15px;
@@ -21,14 +24,20 @@
                             height: 30px; }
     .month {}
 
+    .dateTip {  position:absolute;
+                width: 40px;
+                text-align: center;
+                display:none;
+                font-size: 12px; }
+
 </style>
 
 <title>Git Time Machine</title>
 <h1>Git Time Machine</h1>
 
 <br>
-<h2> GitHub's trendiest repos from 2012 to today </h2>
 <br>
+<h2> The Top 10 Trendiest Repos from March 2012 //to do make date dynamic</h2>
 
 <!-- <div class="btn-toolbar" role="toolbar">
     <div class="btn-group">
@@ -57,7 +66,11 @@
 
 
 
-<div class = "dates"></div>
+<div class = "dates">
+    <div class = "dateTip">
+    </div>
+</div>
+
 <div class = "frame">
     <div class = "helpbox">
     </div>
@@ -136,7 +149,7 @@
             .attr("id", function(d) { return d.date; })
             .attr("cx", function(d,i) { return i * 33.50 + 30; })
             .attr("cy", 25)
-            .attr("r", 5)
+            .attr("r", 6)
             .style("fill", "5067bd" )
         .filter(function(d) {return d.date.substr(0,4) !== '2012';})
             .style("fill", "409cb1" )
@@ -204,9 +217,10 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
                 .style("top",d.y - 30 +"px")
                 .style("display","inline")
                 .html( "<br><h2>" + d.repository_name + "</h2> <br> \
-                <a href=" + d.repository_url + ">go to the repo</a> <br> \
+                <a href=" + d.repository_url + ">go to the repo</a> <br><br> \
                 <p>" + d.repository_name + " was \
-                starred " + d.new_stars + " times this month. </p> ");
+                starred " + d.new_stars + " times. </p> \
+                <br> to do repository short desc and repo languages go here");
         })
         .on("mouseout", function(d,i){
             d3.select(rect[0][i])
@@ -215,6 +229,28 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
             //    .style("display","none");
         });
 
+
+    var dateExpand = date.selectAll(".circ")
+        .on("mouseover", function(d,i) {
+            d3.select(this)
+                .transition()
+                    .attr("r",20)
+                .duration(150);
+            d3.select(".dateTip")
+                .style("left", i*33.50 + 75 + "px")
+                .style("top", "160px")
+                .style("display","inline")
+                .attr("id", d.date)
+                .html(d.display);
+        })
+        .on("mouseout", function(d,i){
+            d3.select(this)
+                .transition()
+                    .attr("r",5)
+                .duration(75);
+            d3.select(".dateTip")
+                .style("display", "none");
+        });
 
 
  $('.circ').click(function(){
@@ -250,8 +286,6 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
             .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 160 ? x(d.new_stars) + 10 : 160 ;}  )
             .text( function(d) {  return String(d.new_stars);} )
         .duration(timer);
-
-
  });
 
 });
