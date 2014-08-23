@@ -4,7 +4,7 @@
 <style>
     body { font-family: 'Lato', sans-serif; color: #3d3d3d; margin: 0; }
 
-    .dates { margin-bottom: 30px; margin-top: 50px; }
+    .dates { margin-bottom: 30px; margin-top: 25px; }
 
 
     .helpbox 		{      border: 1px solid #f93;
@@ -16,8 +16,7 @@
                            width: 200px;
                            height: 400px;
                            left: 800px;
-                           display:none; /*only if you want not shown by default*/
-                           }
+                            }
     .nameText { }
     .countText { font-size: 12px; }
     .dates          {       width: 100%;
@@ -25,8 +24,8 @@
     .month {}
 
     .dateTip {  position:absolute;
-                width: 40px;
-                text-align: center;
+                width: 100px;
+                text-align: left;
                 display:none;
                 font-size: 12px; }
 
@@ -37,34 +36,9 @@
 
 <br>
 <br>
-<h2> The Top 10 Trendiest Repos from March 2012 //to do make date dynamic</h2>
-
-<!-- <div class="btn-toolbar" role="toolbar">
-    <div class="btn-group">
-      <button type="button" id='2012-03' class="btn btn-default">Mar</button>
-      <button type="button" id="2012-04" class="btn btn-default">Apr</button>
-      <button type="button" id="2012-05" class="btn btn-default">May</button>
-      <button type="button" id="2012-06" class="btn btn-default">Jun</button>
-      <button type="button" id="2012-07" class="btn btn-default">Jul</button>
-      <button type="button" id="2012-08" class="btn btn-default">Aug</button>
-      <button type="button" id="2012-09" class="btn btn-default">Sep</button>
-      <button type="button" id="2012-10" class="btn btn-default">Oct</button>
-      <button type="button" id="2012-11" class="btn btn-default">Nov</button>
-      <button type="button" id="2012-12" class="btn btn-default">Dec</button>
-    </div>
-    <div class="btn-group">
-        <button type="button" class="btn btn-default">Left</button>
-        <button type="button" class="btn btn-default">Middle</button>
-        <button type="button" class="btn btn-default">Right</button>
-    </div>
-    <div class="btn-group">
-        <button type="button" class="btn btn-default">Left</button>
-        <button type="button" class="btn btn-default">Middle</button>
-        <button type="button" class="btn btn-default">Right</button>
-    </div>
-</div> -->
-
-
+<h2> The Top 10 Trendiest Repos from March 2012 to today</h2>
+<br>
+<h2> March 2012 //to do make this reflect actual date selected </h2>
 
 <div class = "dates">
     <div class = "dateTip">
@@ -73,6 +47,12 @@
 
 <div class = "frame">
     <div class = "helpbox">
+        <br>
+        <h2> Click on the dots!  </h2>
+        <br>
+        <h2> Mouse over the repo bars! </h2>
+        <br><br>
+        <p> </p>
     </div>
 </div>
 
@@ -205,7 +185,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
             .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
             //this next line makes sure text doesn't overlap w/ labels
             .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 160 ? x(d.new_stars) + 10 : 160 ;}  )
-            .text( function(d) {  return String(d.new_stars);} );
+            .text( function(d) {  return String(d.new_stars) + " new stars";} );
 
     //change the attributes of pre-existing elements
     var tooltips = chart.selectAll(".bars")
@@ -238,7 +218,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
                 .duration(150);
             d3.select(".dateTip")
                 .style("left", i*33.50 + 75 + "px")
-                .style("top", "160px")
+                .style("top", "200px")
                 .style("display","inline")
                 .attr("id", d.date)
                 .html(d.display);
