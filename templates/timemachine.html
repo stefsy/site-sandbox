@@ -3,7 +3,6 @@
 
 <style>
     body { font-family: 'Lato', sans-serif; color: #3d3d3d; margin: 0; }
-
     .dates { margin-bottom: 30px; margin-top: 25px; }
 
 
@@ -25,20 +24,19 @@
 
     .dateTip {  position:absolute;
                 width: 100px;
-                text-align: left;
+                text-align: center;
                 display:none;
-                font-size: 12px; }
+                font-size: 14px; }
 
 </style>
 
 <title>Git Time Machine</title>
-<h1>Git Time Machine</h1>
+<h1>Git Retro: Top 10 Trendiest Repos from 2012 to Today</h1>
+<br>
 
-<br>
-<br>
-<h2> The Top 10 Trendiest Repos from March 2012 to today</h2>
-<br>
-<h2> March 2012 //to do make this reflect actual date selected </h2>
+<div id = "currentMonth">
+    <h2>Repos w/ the most new stars: 2012-03 </h2>
+</div>
 
 <div class = "dates">
     <div class = "dateTip">
@@ -54,6 +52,16 @@
         <br><br>
         <p> </p>
     </div>
+</div>
+
+<div class = "writeup">
+    <h3> What is this? </h3>
+    <br>
+    <ul>
+        <li>data from GitHub's
+        <li>month by month
+    </ul>
+
 </div>
 
 <p style="font-size:11px"><a href="{{url_for('homepage')}}"> <-- go home</a></p>
@@ -127,6 +135,7 @@
         .enter().append("circle")
             .attr("class", "circ")
             .attr("id", function(d) { return d.date; })
+            .attr("desc", function(d) { return d.display; })
             .attr("cx", function(d,i) { return i * 33.50 + 30; })
             .attr("cy", 25)
             .attr("r", 6)
@@ -141,7 +150,6 @@
 
 
 
-
 d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(error, data) {
 
   data.forEach(function(d) {
@@ -150,13 +158,15 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
 
   var x = d3.scale.linear()
     //fix later only works for 2013, domain must update on max(new_stars)
-      .domain([0,5000])
+      .domain([0,5500])
       .range([0,height]);
 
     var rect = chart.selectAll("rect")
-        .data(data)
-        .enter().append("rect")
-            .filter(function(d) {return d.month === defaultFilter;})
+        .data(data.filter(function(d) {return d.month === defaultFilter;}))
+        .enter()
+            .append("svg:a")
+                .attr("xlink:href", function(d) { return d.repository_url; })
+            .append("rect")
                 .attr("class","bars")
                 .attr("y", function(d,i) { return i * (colHt + 2) ; })
                 .attr("width",0)
@@ -169,22 +179,21 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
         .duration(800);
 
     var nameText = chart.selectAll("nameText")
-        .data(data)
+        .data(data.filter(function(d) {return d.month === defaultFilter;}))
         .enter().append("text")
-            .filter(function(d) {return d.month === defaultFilter;})
             .attr("class","nameText")
             .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
             .attr("x", 10 )
-            .text( function(d) {  return d.repository_name;} );
+            .text( function(d) {  return d.repository_name;} )
+            .attr("width", this.getComputedTextLength );
 
     var countText = chart.selectAll("countText")
-        .data(data)
+        .data(data.filter(function(d) {return d.month === defaultFilter;}))
         .enter().append("text")
-            .filter(function(d) {return d.month === defaultFilter;})
             .attr("class","countText")
             .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
             //this next line makes sure text doesn't overlap w/ labels
-            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 160 ? x(d.new_stars) + 10 : 160 ;}  )
+            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 200 ? x(d.new_stars) + 10 : 200 ;}  )
             .text( function(d) {  return String(d.new_stars) + " new stars";} );
 
     //change the attributes of pre-existing elements
@@ -199,7 +208,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
                 .html( "<br><h2>" + d.repository_name + "</h2> <br> \
                 <a href=" + d.repository_url + ">go to the repo</a> <br><br> \
                 <p>" + d.repository_name + " was \
-                starred " + d.new_stars + " times. </p> \
+                starred " + d.new_stars + " times this month. </p> \
                 <br> to do repository short desc and repo languages go here");
         })
         .on("mouseout", function(d,i){
@@ -217,8 +226,8 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
                     .attr("r",20)
                 .duration(150);
             d3.select(".dateTip")
-                .style("left", i*33.50 + 75 + "px")
-                .style("top", "200px")
+                .style("left", i*33.50 + 70 + "px")
+                .style("top", "136px")
                 .style("display","inline")
                 .attr("id", d.date)
                 .html(d.display);
@@ -242,9 +251,17 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
      //omg in javascript == and === are not the same
     //  console.log(String(this.id) === defaultFilter);
 
+
     var newFilter = String(this.id);
 
     var timer = 500;
+
+    //updates the currentMonth div to show live range. change to "Jan 2012" style string
+    $('#currentMonth').html("<h2> Repos w/ the most new stars: " + newFilter + "</h2>");
+
+    chart.selectAll("a")
+        .data(data.filter(function(d) { return d.month === newFilter;}))
+            .attr("xlink:href", function(d) { console.log(d.repository_url); return d.repository_url; });
 
     rect.data(data.filter(function(d) { return d.month === newFilter;}))
         .transition()
@@ -263,8 +280,8 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
     countText.data(data.filter(function(d) {return d.month === newFilter;}))
         .transition()
             .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
-            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 160 ? x(d.new_stars) + 10 : 160 ;}  )
-            .text( function(d) {  return String(d.new_stars);} )
+            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 200 ? x(d.new_stars) + 10 : 200 ;}  )
+            .text( function(d) {  return String(d.new_stars) + " new stars" ;} )
         .duration(timer);
  });
 
