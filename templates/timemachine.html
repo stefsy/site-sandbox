@@ -35,7 +35,7 @@
 <br>
 
 <div id = "currentMonth">
-    <h2>Repos w/ the most new stars: 2012-03 </h2>
+    <h2>Repos w/ the most new stars over the month ending in March 31 2012 </h2>
 </div>
 
 <div class = "dates">
@@ -256,12 +256,15 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
 
     var timer = 500;
 
-    //updates the currentMonth div to show live range. change to "Jan 2012" style string
-    $('#currentMonth').html("<h2> Repos w/ the most new stars: " + newFilter + "</h2>");
+    //awful! i'm sorry.
+    var dt = new Date(this.id.substr(0,4), this.id.substr(5,6),0);
+
+    //what a gross bit of date code
+    $('#currentMonth').html("<h2> Repos w/ the most new stars over the month ending in " + dt.toDateString().substr(4) + "</h2>");
 
     chart.selectAll("a")
         .data(data.filter(function(d) { return d.month === newFilter;}))
-            .attr("xlink:href", function(d) { console.log(d.repository_url); return d.repository_url; });
+            .attr("xlink:href", function(d) { return d.repository_url; });
 
     rect.data(data.filter(function(d) { return d.month === newFilter;}))
         .transition()
