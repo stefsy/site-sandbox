@@ -35,7 +35,7 @@
 <br>
 
 <div id = "currentMonth">
-    <h2>Repos w/ the most new stars over the month ending in March 31 2012 </h2>
+    <h2>Repos with the most new stars over Mar 2012 </h2>
 </div>
 
 <div class = "dates">
@@ -55,12 +55,31 @@
 </div>
 
 <div class = "writeup">
+    <h3> What do I do? </h3>
+    <br>
+    <p> Click on the dots! Mouse over the bars! Click on the bars!</p>
+    <br>
     <h3> What is this? </h3>
     <br>
     <ul>
-        <li>data from GitHub's
-        <li>month by month
+        <li>A short history of repos Githubbers used to think were cool and trendy.
+        <li>A monthly aggregate of star events across all repositories.
+        <li>Data from the <a href="http://www.githubarchive.org/"> GitHub Archive</a>
+        <li>Repo available <a href="https://github.com/stefsy/git-retro">here </a>
     </ul>
+    <br>
+    <h3> What are some fun facts about this data? </h3>
+    <br>
+    <ul>
+        <li> 231 repos have ever been on the top 10 list.
+        <li> Bootstrap is the all time platinum repo, staying on the board for 19 of the 29 months recorded.
+        <li> Popcorn-app was huge in March 2014, but kept getting moving around and mushrooming back to life under different owners.
+        <li> The mininum number of stars it takes to get on the top 10 list is 727;
+        <li> &nbsp;&nbsp;&nbsp;&nbsp; the median is 2,287.5;
+        <li> &nbsp;&nbsp;&nbsp;&nbsp; and the maximum is 10,722.
+
+    </ul>
+
 
 </div>
 
@@ -150,7 +169,7 @@
 
 
 
-d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(error, data) {
+d3.csv("{{ url_for('static', filename='billboard_created.csv') }}", function(error, data) {
 
   data.forEach(function(d) {
     d.new_stars = +d.new_stars;
@@ -158,7 +177,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
 
   var x = d3.scale.linear()
     //fix later only works for 2013, domain must update on max(new_stars)
-      .domain([0,5500])
+      .domain([0,6200])
       .range([0,height]);
 
     var rect = chart.selectAll("rect")
@@ -193,7 +212,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
             .attr("class","countText")
             .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
             //this next line makes sure text doesn't overlap w/ labels
-            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 200 ? x(d.new_stars) + 10 : 200 ;}  )
+            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 ) ;}  )
             .text( function(d) {  return String(d.new_stars) + " new stars";} );
 
     //change the attributes of pre-existing elements
@@ -201,6 +220,8 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
         .on("mouseover", function(d,i) {
             d3.select(this)
                 .style("fill","#f93");
+
+            var cr =  new Date(d.repository_created_at);
             d3.select(".helpbox")
                 .style("left","800px")
                 .style("top",d.y - 30 +"px")
@@ -209,7 +230,8 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
                 <a href=" + d.repository_url + ">go to the repo</a> <br><br> \
                 <p>" + d.repository_name + " was \
                 starred " + d.new_stars + " times this month. </p> \
-                <br> to do repository short desc and repo languages go here");
+                <br><br> It was created on <br>" + cr.toDateString() + ".<br> \
+                 and written mostly in " + d.repository_language + "<br>");
         })
         .on("mouseout", function(d,i){
             d3.select(rect[0][i])
@@ -260,7 +282,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
     var dt = new Date(this.id.substr(0,4), this.id.substr(5,6),0);
 
     //what a gross bit of date code
-    $('#currentMonth').html("<h2> Repos w/ the most new stars over the month ending in " + dt.toDateString().substr(4) + "</h2>");
+    $('#currentMonth').html("<h2> Repos with the most new stars over " + dt.toDateString().substr(4,3) + " " + dt.getFullYear()+ "</h2>");
 
     chart.selectAll("a")
         .data(data.filter(function(d) { return d.month === newFilter;}))
@@ -283,7 +305,7 @@ d3.csv("{{ url_for('static', filename='billboard_top_10.csv') }}", function(erro
     countText.data(data.filter(function(d) {return d.month === newFilter;}))
         .transition()
             .attr("dy", function(d,i) { return i * (colHt+2) + (colHt/2+5); })
-            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 200 ? x(d.new_stars) + 10 : 200 ;}  )
+            .attr("dx", function(d) {  return ( x(d.new_stars) + 10 )> 220 ? x(d.new_stars) + 10 : 220 ;}  )
             .text( function(d) {  return String(d.new_stars) + " new stars" ;} )
         .duration(timer);
  });
