@@ -1,4 +1,6 @@
 {% extends "baselayout.html" %}
+
+
 {% block body %}
 
 <!DOCTYPE html>
@@ -1740,7 +1742,7 @@ In&nbsp;[3]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">cars</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="k">print</span> <span class="n">cars</span> <span class="o">+</span> <span class="mi">100</span> 
+<span class="k">print</span> <span class="n">cars</span> <span class="o">+</span> <span class="mi">100</span>
 </pre></div>
 
 </div>
@@ -1770,7 +1772,7 @@ In&nbsp;[4]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> 
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 </pre></div>
 
 </div>
@@ -1784,7 +1786,7 @@ In&nbsp;[5]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="c">#plot settings</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">&#39;display.mpl_style&#39;</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">)</span> 
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">&#39;display.mpl_style&#39;</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
@@ -2202,7 +2204,7 @@ In&nbsp;[14]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="c">#define index columns. We&#39;re going to come back to this in another section.</span>
-<span class="n">weather</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="s">&quot;SELECT * from weather_2012&quot;</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> 
+<span class="n">weather</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="s">&quot;SELECT * from weather_2012&quot;</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span>
                  <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;date_time&#39;</span><span class="p">])</span>
 </pre></div>
 
@@ -13465,6 +13467,8 @@ tbVRUVERv/rVr+If/uEfij0aAJA4p3ECDKOf/vSncdttt/X5XDanbwIAI0HZAwAASJDTOAEAABKk
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="the-end-questions-comments-try-stuff-now">The End! Questions? Comments? Try stuff now!</h1>
+<a href =" {{ url_for('homepage') }}"> See my other talks and d3 viz examples here! </a>
+
 </div>
 </body>
 </html>

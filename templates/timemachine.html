@@ -222,6 +222,7 @@ d3.csv("{{ url_for('static', filename='billboard_created.csv') }}", function(err
                 .style("fill","#f93");
 
             var cr =  new Date(d.repository_created_at);
+            
             d3.select(".helpbox")
                 .style("left","800px")
                 .style("top",d.y - 30 +"px")

@@ -1,5 +1,4 @@
-from flask import Flask, request, session, g, redirect, url_for, render_template
-
+from flask import Flask
 
 #configure
 DEBUG = False #DO NOT USE THIS ON PRODUCTION
@@ -23,23 +22,23 @@ def mm_sketch():
 
 @app.route("/learnbydoing/")
 def learnbydoing():
- 	return render_template('learnbydoing.html')
+	return render_template('learnbydoing.html')
 
 @app.route("/rects/")
 def rects():
- 	return render_template('rects.html')
+	return render_template('rects.html')
 
 @app.route("/nodes/")
 def nodes():
- 	return render_template('nodes.html')
+	return render_template('nodes.html')
 
 @app.route("/sort_bars/")
 def sort_bars():
- 	return render_template('sort_bars.html')
+	return render_template('sort_bars.html')
 
 @app.route("/channelstats/")
 def channelstats():
- 	return render_template('channelstats.html')
+	return render_template('channelstats.html')
 
 @app.route("/donuts/")
 def donuts():
@@ -96,6 +95,8 @@ def womp():
 @app.route("/wark/")
 def wark():
 	return "bork bork wark bork"
+
+
 
 	#run the app
 if __name__ == "__main__":
