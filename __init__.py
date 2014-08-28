@@ -88,6 +88,10 @@ def ds_toolkit():
 def pandas_devcon():
 	return render_template('pandas_devcon_july2014.html')
 
+@app.route("/intermediate_python/")
+def intermediate_python():
+	return render_template('intermediate_python.html')	
+
 @app.route("/life/")
 def womp():
 	return "It doesn't make much sense."
