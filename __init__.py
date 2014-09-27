@@ -90,7 +90,11 @@ def pandas_devcon():
 
 @app.route("/intermediate_python/")
 def intermediate_python():
-	return render_template('intermediate_python.html')	
+	return render_template('intermediate_python.html')
+
+@app.route("/datascience_up/")
+def datascience_up():
+	return render_template('ds_up_sept2014.html')
 
 @app.route("/life/")
 def womp():
