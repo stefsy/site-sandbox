@@ -80,10 +80,6 @@ def zoomtree():
 def timemachine():
 	return render_template('timemachine.html')
 
-@app.route("/ds_toolkit/")
-def ds_toolkit():
-	return render_template('ds_may2014.html')
-
 @app.route("/pandas_devcon/")
 def pandas_devcon():
 	return render_template('pandas_devcon_july2014.html')
@@ -92,9 +88,19 @@ def pandas_devcon():
 def intermediate_python():
 	return render_template('intermediate_python.html')
 
-@app.route("/datascience_up/")
-def datascience_up():
-	return render_template('ds_up_sept2014.html')
+# @app.route("/datascience_up/")
+# def datascience_up():
+# 	return render_template('ds_up_sept2014.html')
+#
+# @app.route("/ds_toolkit/")
+# def ds_toolkit():
+# 	return render_template('ds_may2014.html')
+
+# @app.route("/datascience_up/")
+# @app.route("/ds_toolkit/")
+@app.route("/ds_at_work/")
+def ds_at_work():
+	return render_template('ds_at_work.html')
 
 @app.route("/life/")
 def womp():
