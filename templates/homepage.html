@@ -1,5 +1,25 @@
-{% extends "baselayout.html" %}
-{% block body %}
+<!doctype html>
+<meta charset="utf-8">
+<!-- base layout class that other html layouts will inherit from -->
+
+<head>
+	<meta name="description" content="Stephanie Sy. Building data tools and companies in Manila, Philippines."/>
+	<link href="{{ url_for('static', filename='css/font-awesome.css')  }}" rel="stylesheet">
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+	<link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic|PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/stylesheet.css') }}">
+	<script type='text/javascript' src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+	<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-44808435-1', 'stefsy.com');
+	ga('send', 'pageview');
+
+	</script>
+</head>
+
+<div class="page">
 	<title>Stephanie Sy</title>
 
 	<h1>stef sy</h1>
@@ -32,4 +52,9 @@
 	</div>
 
 
-{% endblock %}
+<div class= "icon-bar">
+	<a href="http://www.twitter.com/stefsy"><i class="fa fa-twitter fa-3x"></i></a>
+	<a href="http://www.github.com/stefsy"><i class="fa fa-github fa-3x"></i></a>
+</div>
+
+</div>

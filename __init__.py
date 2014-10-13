@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 
 #configure
-DEBUG = False #DO NOT USE THIS ON PRODUCTION
+DEBUG = True #DO NOT USE THIS ON PRODUCTION
 
 #actual app creation
 app = Flask(__name__)
@@ -96,11 +96,15 @@ def intermediate_python():
 # def ds_toolkit():
 # 	return render_template('ds_may2014.html')
 
-# @app.route("/datascience_up/")
-# @app.route("/ds_toolkit/")
+@app.route("/datascience_up/")
+@app.route("/ds_toolkit/")
 @app.route("/ds_at_work/")
 def ds_at_work():
 	return render_template('ds_at_work.html')
+
+@app.route("/map007/")
+def map007():
+	return render_template('worldmap.html')
 
 @app.route("/life/")
 def womp():
