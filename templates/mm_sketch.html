@@ -11,17 +11,17 @@
 <div class="btn-group">
   <button type="button" class="btn btn-default" id="fround">Funding Round</button>
   <button type="button" class="btn btn-default" id="bmrr">Monthly Recurring Revenue</button>
-  
+
 </div><div class = "frame">
     <div class = "tooltip"></div>
 </div>
 
 <ul>
-  <li> dedicated to Dave C, one super cool and hella smart guy. 
+  <li> dedicated to Dave C, one super cool and hella smart guy.
   <li> d3.axis will adjust if you change the domain then .call(xAxis)
   <li> select("labelid").text("and override the existing label")
   <li> boostrap buttons
-</ul> 
+</ul>
 
 
 <p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
@@ -46,6 +46,7 @@
 </style>
 
 
+<script type='text/javascript' src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -150,7 +151,7 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
 
     d3.select("#bmrr").on("click", function() {
 
-        <!-- totally inconsistent patterns for select lets be real i'm not fixing this --> 
+        <!-- totally inconsistent patterns for select lets be real i'm not fixing this -->
         x.domain([0,d3.max(data,function (d) { return +d.mrr;})]);
         console.log(d3.max(data,function(d){return +d.mrr;}));
         var t = svg.transition().duration(4000);
@@ -159,7 +160,7 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
         /* on click change bottom axis and resort dots*/
         d3.selectAll(".dot")
             .transition()
-            /*change x scale to new bottom axis scale!*/ 
+            /*change x scale to new bottom axis scale!*/
             .attr("cx", function(d) { return x(d.revenue); })
               .duration(5000);
         svg.select(".xlabel").text("Monthly Recurring Revenue");
@@ -177,7 +178,7 @@ d3.csv("{{ url_for('static', filename='mm_data.csv') }}", function(error, data) 
         /* on click change bottom axis and resort dots*/
         d3.selectAll(".dot")
             .transition()
-            /*change x scale to new bottom axis scale!*/ 
+            /*change x scale to new bottom axis scale!*/
             .attr("cx", function(d) { return x(d.series); })
               .duration(5000);
         svg.select(".xlabel").text("Funding Round");

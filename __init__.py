@@ -104,7 +104,11 @@ def ds_at_work():
 
 @app.route("/map007/")
 def map007():
-	return render_template('worldmap.html')
+	return render_template('worldmap7.html')
+
+@app.route("/map008/")
+def map008():
+	return render_template('worldmap8.html')
 
 @app.route("/life/")
 def womp():

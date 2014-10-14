@@ -1,0 +1,136 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<style>
+svg {
+  background: #fff;
+}
+
+.sphere {
+  fill: #fff;
+}
+
+.land {
+  fill: #fff;
+}
+
+.boundary {
+  fill: none;
+  stroke: #b8a3b9;
+  /* next three lines maintains neatness when zoomed in*/
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+
+}
+
+.boundary.selected {
+    fill: #ff7373;
+    stroke: none;
+}
+
+/* whats the use of overlay?*/
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+</style>
+
+<title>Mercator World Map</title>
+<h1>Mapping: Standard Mercator Projection</h1>
+
+<div id = "frame1"></div>
+<ul>
+    <li>projections</li>
+    <li>topojson and geojson object structure</li>
+    <li>zoomable map</li>
+    <li><a href="https://github.com/mbostock/d3/wiki/Selections#datum">.datum()</a> unlike .data(), binds without joining</li>
+    <li>select country subobject by id </li>
+    <li>use <a href="https://github.com/mbostock/topojson/blob/v0.0.6/topojson.js#L101">.mesh()</a> to compute boundaries</li>
+    <li>use <a href="merge multiple polygons into a single polygon whilst removing interior borders">.merge()</a> to merge multiple polygons into a single polygon whilst removing interior borders</li>
+</ul>
+
+
+<p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- see more d3js blocks</a></p>
+
+
+
+<script type='text/javascript' src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/topojson.v1.min.js') }}"></script>
+
+<script>
+
+var width = 1024,
+    height = 750;
+
+var projection = d3.geo.mercator()
+    .translate([width / 2, height / 2 + 100])
+    .scale((width - 1) / 2 / Math.PI);
+
+var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var svg = d3.select("#frame1").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g");
+
+var g = svg.append("g");
+
+svg.append("rect")
+    .attr("class", "overlay")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.call(zoom)
+    .call(zoom.event);
+
+d3.json("{{ url_for('static', filename='data/world-topo.json') }}", function(error, world) {
+  g.append("path")
+      .datum({type: "Sphere"})
+      .attr("class", "sphere")
+      .attr("d", path);
+
+  g.append("path")
+      .datum(topojson.merge(world, world.objects.countries.geometries))
+      .attr("class", "land")
+      .attr("d", path);
+
+  /* borders between states*/
+  g.append("path")
+      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a === b; }))
+      .attr("class", "boundary")
+      .attr("d", path);
+
+  /* non contiguous borders, or land boundaries*/
+  g.append("path")
+      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+      .attr("class", "boundary")
+      .attr("d", path);
+
+  /*which countries to highlight*/
+  var selectedCountry = d3.set([100,124]);
+
+  /* merged geometry shape that contains all selected countreis*/
+    g.append("path")
+      .datum(topojson.merge(world, world.objects.countries.geometries.filter(function(d) { return selectedCountry.has(d.id); })))
+      .attr("class", "boundary selected")
+      .attr("d", path);
+
+});
+
+function zoomed() {
+  g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+
+d3.select(self.frameElement).style("height", height + "px");
+
+</script>
+
+
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends "baselayout.html" %}
 {% block body %}
 
-<title>Multi-Series Line Chart</title> 
+<title>Multi-Series Line Chart</title>
 <h1>d3 Sandbox</h1>
 
 <h2> Multi-Series Line Chart: Smartphone Sales 2007-2013 </h2>
@@ -9,7 +9,7 @@
 
 <div class = "frame">
     <div class = "tooltip"></div>
-</div> 
+</div>
 
 <p><a href="http://bl.ocks.org/mbostock/3884955">mbostock reference</a>. Mobile phone market share stats from <a href= "http://en.wikipedia.org/wiki/Mobile_operating_system#Market_share">Wikipedia/Gartner</a></p>
 
@@ -18,7 +18,7 @@
     <li> practice with axes and labeling
     <li> map()ping flat files to json
     <li> converting to percentages
-</ul> 
+</ul>
 
 <p>Notes</p>
 <ul>
@@ -32,22 +32,24 @@
     <li> domains must match range
     <li> text-anchors, selecting and transforming text in axes
     <li> applying tooltips to paths
-</ul> 
+</ul>
 
 <p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
 
-<style> 
+<style>
 path      {fill: none;}
-.tooltip {font-family:'Lato', sans-serif; 
+.tooltip {font-family:'Lato', sans-serif;
           font-size: 30px;
           background: none;}
 </style>
 
+
+<script type='text/javascript' src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
 <script>
 
 //commas for different vars, defining margin as an obj allows for . access
 var margin = {top: 20, right:20, bottom: 30, left: 50},
-	width = 960 - margin.left - margin.right, 
+	width = 960 - margin.left - margin.right,
 	height = 500 - margin.top - margin.bottom;
 var color = d3.scale.category20();
 
@@ -59,7 +61,7 @@ for(var i=0;i<26;i++){
 }
 
 var x = d3.scale.ordinal()
-	//array of numbers width/26 FIX THIS! 
+	//array of numbers width/26 FIX THIS!
 	.range(xrange);
 
 var y = d3.scale.linear()
@@ -82,7 +84,7 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.quarter); })
     .y(function(d) { return y(d.units); });
 
-//defining canvas 
+//defining canvas
 var svg = d3.select(".frame").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -92,10 +94,10 @@ var svg = d3.select(".frame").append("svg")
 
 d3.csv("{{ url_for('static', filename='mobile_market.csv') }}", function(data) {
 	//d3.csv returns an array of objects. each object corresponds to a row and gives key,value pairs
-	
-	/*unpacking the ff:   
+
+	/*unpacking the ff:
 		color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-	get the header row. get the keys only. filter to remove the y value (in this case, data). set that as the domain of the color range. 
+	get the header row. get the keys only. filter to remove the y value (in this case, data). set that as the domain of the color range.
 	OUTCOME: assign one color per series*/
 
 	console.log(data[0]);
@@ -104,13 +106,13 @@ d3.csv("{{ url_for('static', filename='mobile_market.csv') }}", function(data) {
 
 	color.domain(d3.keys(data[0]).filter(function(key) { return (key !== "Quarter" && key !== "Total Phones" && key !== "Total Smartphones"); }));
 
-	//converts CSV flat format into JSON formatting. devices === data 
+	//converts CSV flat format into JSON formatting. devices === data
 	var devices = color.domain().map(function(device) { //color.domain() = domain of device names (keys)
     	return {
       	name: device,  //creates object with name = device name
       	//d = full set of data. per line, returns quarter and value of d['key']
-      	//this gives 26 rows of values (or n rows) for each device name 
-      	values: data.map(function(d) { 
+      	//this gives 26 rows of values (or n rows) for each device name
+      	values: data.map(function(d) {
         	return {quarter: d.Quarter, units: +d[device]}; //to get units for RIM only: +d.RIM
       		})
     	};
@@ -118,7 +120,7 @@ d3.csv("{{ url_for('static', filename='mobile_market.csv') }}", function(data) {
 
 	console.log(devices);
 
-	//extent() returns min and max, but we want full set. mapping full set of ordinal values to chart. 
+	//extent() returns min and max, but we want full set. mapping full set of ordinal values to chart.
 	x.domain(data.map(function(d) { return d.Quarter; }));
 	console.log(x.domain());
 

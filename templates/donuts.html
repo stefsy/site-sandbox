@@ -1,7 +1,7 @@
 {% extends "baselayout.html" %}
 {% block body %}
 
-<title>Pies and TV</title> 
+<title>Pies and TV</title>
 <h1>d3 Sandbox</h1>
 
 <h2> Pie Charts and TV Screens </h2>
@@ -10,27 +10,27 @@
 
 <form>
 	<textarea id="yt_channelid" placeholder = "thewockeez"></textarea>
-</form> 
+</form>
 
-<button id= "yt_button">Hit It</button> 
+<button id= "yt_button">Hit It</button>
 
 <div class = "frame">
     <div class = "tooltip"></div>
-</div> 
+</div>
 
-<p> <a href="http://bl.ocks.org/mbostock/1346395">mbostock reference</a>  </p> 
+<p> <a href="http://bl.ocks.org/mbostock/1346395">mbostock reference</a>  </p>
 
 <ul>
 	<li> YouTube Data API v3
-	<li> jquery forms 
+	<li> jquery forms
 	<li> svg arcs and paths
   <li> pull in list of lists -> generate one per playlist
   <li> dynamic page to accomodate any # of playlists
   <li> for each playlist break out videos by views
   <li> get list of videos by likes,comments,favorites,views
   <li> multiple asynchronous calls
-  <li> closures and callbacks 
-</ul> 
+  <li> closures and callbacks
+</ul>
 
 <p> Way more than an exercise's worth of time on this. Next:</p>
 
@@ -42,6 +42,7 @@
 
 <p style="font-size:10px"><a href="{{url_for('learnbydoing')}}"> <-- back to main project page</a></p>
 
+<script type='text/javascript' src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
 <script>
 
 //video object constructor
@@ -55,10 +56,10 @@ function video(vname,view,like,fav,comment) {
 
 
 //create chart variables
-var width = 900; 
-var height = 450; 
+var width = 900;
+var height = 450;
 var radius = Math.min(width,height)/4;
-var color = d3.scale.category20();                
+var color = d3.scale.category20();
 
 // defines arc
 var arc = d3.svg.arc()
@@ -68,7 +69,7 @@ var arc = d3.svg.arc()
 // is actually a function applied to the data
 var pie = d3.layout.pie()
     .sort(d3.ascending)
-    .value(function(d) { return d.views; }); //BORK BORK 
+    .value(function(d) { return d.views; }); //BORK BORK
 
 //identify channel and url
 $("#yt_button").click(function() {
@@ -78,8 +79,8 @@ $("#yt_button").click(function() {
   /* 0 have a channel username */
   var yt_channel = $("#yt_channelid").val();
 
-  /* 1 from username, get channel id*/ 
-  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics&forUsername=' + yt_channel + '&key=' + API_key; 
+  /* 1 from username, get channel id*/
+  var channel_gen_url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics&forUsername=' + yt_channel + '&key=' + API_key;
 
   /*oh no, am i going to have to nest a bunch of asynchronous .getJSON calls? is that even best practice?*/
   $.getJSON(channel_gen_url)
@@ -90,7 +91,7 @@ $("#yt_button").click(function() {
       var channel_id = channel_json.items[0]['id']
       var loplaylists_url = "https://www.googleapis.com/youtube/v3/playlists?part=id%2Csnippet&channelId="+ channel_id + "&maxResults=50&key=" + API_key
 
-      /* 2 get list of playlists and names*/ 
+      /* 2 get list of playlists and names*/
       $.getJSON(loplaylists_url)
         .done(function( loplaylists_json ){
 
@@ -98,9 +99,9 @@ $("#yt_button").click(function() {
 
           //array of playlist ids for channel
           var loplaylists_array = [];
-          //array of playlist names 
+          //array of playlist names
           var loplaylists_name = [];
-          //would it be better to have an array of objects w/ name & id? 
+          //would it be better to have an array of objects w/ name & id?
 
           //can compress lines 95 to 110 into cleaner block of code
 
@@ -111,7 +112,7 @@ $("#yt_button").click(function() {
           console.log(loplaylists_array);
           console.log(loplaylists_name);
 
-          /*3 - videos in playlists*/ 
+          /*3 - videos in playlists*/
 
           //array of API get requests. 1 per playlist_id
           var playlist_urls_array = [];
@@ -119,7 +120,7 @@ $("#yt_button").click(function() {
             playlist_urls_array.push("https://www.googleapis.com/youtube/v3/playlistItems?part=id%2Csnippet%2Cstatus&playlistId=" + loplaylists_array[i] + "&maxResults=50&key=" + API_key);
           }
           //console.log(playlist_urls_array);
-          
+
           for (var i=0; i< playlist_urls_array.length; i++) {
             $.getJSON(playlist_urls_array[i],
                 (function( thisi ) {
@@ -130,7 +131,7 @@ $("#yt_button").click(function() {
           }
           //num asynch calls 1 + 1 + num_playlists + num_videos
           //num youtube api calls: 1 + 1 + num_playlists + num_videos
-        }); 
+        });
     });
 
   function handleplaylistdata(playlist_json,playlist_name) {
@@ -145,7 +146,7 @@ $("#yt_button").click(function() {
      // console.log(vid_id);
 
       var vid_data = [];
-      //yet another set of async requests! 
+      //yet another set of async requests!
       for(var i=0; i<vid_id.length; i++){
         $.getJSON("https://www.googleapis.com/youtube/v3/videos?part=statistics%2Csnippet&id=" + vid_id[i] + "&key=" + API_key)
           .done(function( video_json ) {
@@ -159,14 +160,14 @@ $("#yt_button").click(function() {
                 var comment = video_json['items'][0]['statistics']['commentCount'];
                 var vidObj = new video(name,view,like,fav,comment);
                 vid_data.push(vidObj);
-                //where is vid_data being scoped? getjson seems to be calling all vid urls in a sequence, but if i try to call vid_data outside of the function it's empty 
+                //where is vid_data being scoped? getjson seems to be calling all vid urls in a sequence, but if i try to call vid_data outside of the function it's empty
                 if(vid_data.length == vid_id.length) {
                   //console.log(vid_data);
                   //ready for processing as a chart
                   var svg1 = d3.select(".frame").append("svg")
                     .attr("width", width/2)
                     .attr("height", height/2)
-                    //what is this grouping together? 
+                    //what is this grouping together?
                   .append("g")
                     .attr("transform", "translate(" + width / 4 + "," + height / 4 + ")");
 
@@ -186,17 +187,17 @@ $("#yt_button").click(function() {
                   g.append("path")
                     .attr("d",arc)
                     .style("fill",function(d,i) {return color(i) });
-                } 
+                }
               }
-          }); 
+          });
       }
 
   };
-  
-  /*DILEMMA: how to have a function that waits until all the asynch calls are in and the data's loaded before kicking off */ 
-  /*let's try asynch creating one piechart for each playlist. i have definitely overreached on exercise scope*/ 
 
-}); 
+  /*DILEMMA: how to have a function that waits until all the asynch calls are in and the data's loaded before kicking off */
+  /*let's try asynch creating one piechart for each playlist. i have definitely overreached on exercise scope*/
+
+});
 
 
 </script>
