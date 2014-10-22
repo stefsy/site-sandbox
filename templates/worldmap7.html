@@ -64,13 +64,13 @@ svg {
 var width = 1024,
     height = 750;
 
-var projection = d3.geo.mercator()
-    .translate([width / 2, height / 2 + 100])
-    .scale((width - 1) / 2 / Math.PI);
-
 var zoom = d3.behavior.zoom()
     .scaleExtent([1, 8])
     .on("zoom", zoomed);
+
+var projection = d3.geo.mercator()
+    .translate([width / 2, height / 2 + 100])
+    .scale((width - 1) / 2 / Math.PI);
 
 var path = d3.geo.path()
     .projection(projection);

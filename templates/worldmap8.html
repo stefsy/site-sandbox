@@ -1,14 +1,33 @@
 {% extends "baselayout.html" %}
 {% block body %}
 
-<title>title</title>
-<h1>d3 Sandbox</h1>
+<style>
 
-<h2> title! </h2>
+.label {
+  display: inline-block;
+  font-size: 48px;
+  line-height: 90px;
+  text-align: center;
+}
 
-<p>description </p>
+</style>
 
-<div class = "frame"></div>
+<title>Transparent Rotating Globes</title>
+<h1>Transparent Rotating Globes</h1>
+
+<div id = "frame"></div>
+
+<h2>topoJSON test</h2>
+<p> Take a standard topoJSON world map, project it spherically, and rotate.</p>
+<ul>
+    <li>d3 supports rotation on 3 axes <a href="http://bl.ocks.org/mbostock/4282586">see specs here</a></li>
+    <li><a href="http://diveintohtml5.info/canvas.html">canvas drawing element</a> is cool and strange</li>
+    <li>transitioned managed with <a href="https://github.com/mbostock/d3/wiki/Transitions">d3.timer</a> on the canvas element</li>
+    <li>change the clip angle to 90 to see the standard opaque globe</li>
+    <li>land mass borders are grey, internal national borders are in light purple</li>
+    <li>transition still jumpy, why?</li>
+</ul>
+
 
 
 <p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- see more d3js blocks</a></p>
@@ -18,12 +37,57 @@
 <script type='text/javascript' src="{{ url_for('static', filename='js/topojson.v1.min.js') }}"></script>
 
 <script>
-    var width = 960,
-        height = 600;
+    var width = 960;
 
-    var viz = d3.selectAll(".frame").append("svg")
-                .attr("width", width)
-                .attr("height", height);
+    var diameter = width / 2,
+        radius = diameter / 2 ,
+        velocity = .01,
+        then = Date.now();
+
+    var projection = d3.geo.orthographic()
+        .scale(radius - 2)
+        .translate([radius, radius])
+        .clipAngle(180)
+        .precision(0);
+
+    var path = d3.geo.path()
+        .projection(projection)
+
+    // append one canvas object for each globe
+    var canvas = d3.select("#frame").selectAll("canvas")
+        .data(d3.range(2))
+      .enter().append("canvas")
+        .attr("width", diameter)
+        .attr("height", diameter);
+
+    d3.json("{{ url_for('static', filename='data/world-topo.json') }}", function(error, world) {
+      var land = topojson.feature(world, world.objects.land);
+      var borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; });
+      var globe = {type: "Sphere"};
+
+    //timer calls a function continuously... so why is it choppy??
+      d3.timer(function() {
+          var angle = velocity * (Date.now() - then);
+            canvas.each(function(i) {
+              var rotate = [0, 0],
+              // always have to pass "2d", no such thing as 3d context yet
+              context = this.getContext("2d");
+
+              rotate[i] = angle, projection.rotate(rotate);
+              context.clearRect(0, 0, diameter, diameter);
+
+            // defines context visual style for land. to fill the insides vs outline, use context.fill();
+              context.beginPath(), path.context(context)(land), context.strokeStyle = "#7e7e7e", context.stroke();
+              // defines context visual style for outlines of sphere
+              context.beginPath(), path(globe), context.stroke();
+              // draws borders
+              context.beginPath(), path.context(context)(borders), context.strokeStyle = "#b8a3b9", context.stroke();
+
+
+            });
+      });
+    });
+
 
 </script>
 
