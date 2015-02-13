@@ -1,0 +1,72 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<title>Highcharts</title>
+<h1>Fun with Highcharts</h1>
+
+<p>Alright let's give <a href='http://www.highcharts.com'>Highcharts</a> a shot! </p>
+
+<div class="chart" id="chart1"></div>
+
+<ul>
+    <li> Impressively easy to set up. EXCITING export.js module to jpeg or png it!! 
+    <li> Intelligent default settings on legend, tooltip, ranges. 
+    <li> But I really don't like this grey/blue theme. 
+    <li> Try a more complex chart
+    <li> Try importing csv
+    <li> Try using JSON data obj
+    <li> Try changing style
+    <li> Try dynamic graph with transitions
+</ul>
+
+<div class="chart" id="chart2"></div>
+
+<p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- see more d3js blocks</a></p>
+
+
+<script type='text/javascript' src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+
+
+<script>
+$(function () {
+    $('#chart1').highcharts({
+        chart: {
+            type: 'bar' 
+        },
+        title: {
+            text:  'Candy Bars'
+        }, 
+        xAxis: {
+            categories: ['Mars','Twix','Nestle']
+        },
+        yAxis: {
+            title: {
+                text: "Candy Bars Eaten"
+            }
+        },             
+        series: [{
+            name: 'Lorde',
+            data: [1,2,5]
+        }, {
+            name: 'Swift',
+            data: [2,0,3]
+        }]
+        
+    });
+  
+    $('#chart2').highcharts({
+        chart: {
+            type: 'heatmap' 
+    }
+    }); 
+
+});
+
+
+</script>
+
+
+{% endblock %}

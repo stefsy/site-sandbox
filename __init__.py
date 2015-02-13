@@ -118,6 +118,11 @@ def womp():
 def wark():
 	return "bork bork wark bork"
 
+@app.route("/highcharts/")
+def highcharts():
+	return render_template('highcharts.html')
+
+
 
 
 	#run the app
