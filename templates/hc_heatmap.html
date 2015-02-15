@@ -1,0 +1,94 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<title>Highcharts Heatmap</title>
+<h1>Highcharts Heatmaps</h1>
+
+<p>Testing out more complicated chart implementations like this <a href='http://www.highcharts.com/demo/heatmap'>heatmap</a></p>
+
+<div class="chart" id="chart1"></div>
+
+<ul>
+   	<li> The spline updating using something called Highcharts.svg to control animation. The heatmaps charts requires a specific heatmap module to run. Basically highcharts is really amazingly easy if your use case exactly fits the standard, but at the expense of black boxing the process. 
+	<li> Data object is not great. Array of arrays [[x position, y position, value]], check to see if this is true for other hc chart too.
+	<li> Color axis scaling is handled nicely somewhere else! Set minColor, maxColor and you're good to go. Best practice is to set the min value also, but it'll nicely find the max value and map it to the maxColor, 
+	<li> Range thing on right is a nice touch!
+	<li> Nice logical handling of label overlap... a lot of the axis issues I have to handle manually in d3. 
+	<li> Highcharts has a <a href="http://www.highcharts.com/docs/working-with-data/data-module"> data module</a>. Check it out next! 
+
+</ul>
+
+
+<p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- see more d3js blocks</a></p>
+
+
+<script type='text/javascript' src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="http://code.highcharts.com/modules/heatmap.js"></script>
+
+
+
+<script>
+$(function () {
+    $('#chart1').highcharts({
+        chart: {
+            type: 'heatmap',
+	    marginTop: 50, 
+	//bigger margin to give space for legend
+   	    marginBottom: 100 
+        },
+        title: {
+            text:  'Olympic Gold Medals'
+        }, 
+        xAxis: {
+            categories: ['Archery','Boxing','100m Sprint', 'Diving']
+        },
+        yAxis: { 
+           categories: ['USA','China','Brazil','Philipines'],
+		// default tile is "Title", set it to null if you don't want anything to show up
+           title: null 
+	},             
+	
+	colorAxis: {
+		minColor: '#FFFFFF',
+		maxColor: '#FF9933',
+		min:0 
+	},
+	
+	legend: {
+		align: 'center',
+		layout: 'horizontal',
+		// offsets from layout, no great way to align with box but not with lables
+		y: 0 
+
+	},
+
+	tooltip: {
+		formatter: function() {
+			return this.series.yAxis.categories[this.point.y] + ' won ' + this.point.value + ' medals <br> in ' + this.series.xAxis.categories[this.point.x]; 
+		}
+	},
+
+	series: [{
+		name: 'Olympic Gold Medals',
+		borderWidth: 1, 
+		color: '#333333',
+		data: [[0,0,1],[0,1,4],[0,2,2],[0,3,1],[1,0,5],[1,1,3],[1,2,2],[1,3,2],[2,0,0],[2,1,1],[2,2,1],[2,3,0],[3,0,0],[3,1,1],[3,2,0],[3,3,1]],
+		dataLabels: {
+			enabled: true,
+			color: '#4C4C4C',
+			style: {
+				textShadow: 'none',
+				HcTextStroke: null
+			}
+		}
+	}]
+        
+    });
+});   
+  
+</script>
+
+
+{% endblock %}

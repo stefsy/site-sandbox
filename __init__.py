@@ -122,7 +122,9 @@ def wark():
 def highcharts():
 	return render_template('highcharts.html')
 
-
+@app.route("/hc_heatmap/")
+def hc_heatmap(): 
+	return render_template('hc_heatmap.html') 
 
 
 	#run the app

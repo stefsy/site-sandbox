@@ -1,0 +1,42 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<title>NBA 2014 Season Stats</title>
+<h1>NBA 2014 Season 3 Pointers</h1>
+
+<h2> Test Test </h2>
+
+<p>description </p>
+
+<button>Update</button>
+
+<div class = "frame">
+    <div class = "tooltip"></div>
+</div>
+ul
+<ul>
+    <li> blah
+    <li> blah
+    <li> blah
+</ul>
+
+<p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- see more d3js blocks</a></p>
+
+
+<script type='text/javascript' src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+
+
+<script>
+	var width = 960,
+		height = 600;
+
+	var viz = d3.selectAll(".frame").append("svg")
+				.attr("width", width)
+				.attr("height", height);
+
+</script>
+
+
+{% endblock %}
