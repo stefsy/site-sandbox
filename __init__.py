@@ -127,6 +127,11 @@ def hc_heatmap():
 	return render_template('hc_heatmap.html') 
 
 
+@app.route("/spider/")
+def spider(): 
+	return render_template('spider.html') 
+
+
 	#run the app
 if __name__ == "__main__":
 	app.run()
