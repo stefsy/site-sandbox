@@ -132,6 +132,11 @@ def spider():
 	return render_template('spider.html') 
 
 
+@app.route("/saln/")
+def saln(): 
+	return render_template('salndemo.html') 
+
+
 	#run the app
 if __name__ == "__main__":
 	app.run()

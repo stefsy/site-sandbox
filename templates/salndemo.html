@@ -1,0 +1,114 @@
+{% extends "baselayout.html" %}
+{% block body %}
+
+<style type="text/css">
+
+.tooltip {
+	font: 15px sans-serif;
+	font-color: black;
+	background: #FFB6C1;
+	opacity: 1.0;
+	padding: 10px ;
+	text-align: left;
+	display: none;
+	position: absolute;
+}
+
+.rect:hover {
+	fill: blue;
+}
+
+</style>
+
+<title>SALN Demo</title>
+<h1>SALN 2014 Demo</h1>
+
+<h2>Real Assets, Personal Properties, Liabilities</h2>
+<br>
+<p> Congressional SALNs are part of our public record. Let's see which lawmakers have wealth in properties and cash. </p>
+
+<div class = "frame">
+    <div class = "tooltip"></div>
+</div>
+
+<ul>
+    <li> Real Assets - Real estate. Purchase value, not current assessed value. 
+    <li> Personal Properties - Investments, Cash, Jewelry etc
+    <li> Liabilities - Debts
+</ul>
+
+<p style="font-size:11px"><a href="{{url_for('learnbydoing')}}"> <-- see more d3js blocks</a></p>
+
+
+<script type='text/javascript' src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+
+
+<script>
+	
+/*setting up svg*/
+	var margin = {top: 20, right: 20, bottom: 30, left: 100},
+	    width = 960 - margin.left - margin.right,
+	    height = 1500 - margin.top - margin.bottom;
+
+	var svg = d3.select(".frame").append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	var x = d3.scale.linear()
+		.domain([0, 1000000000])
+	    .range([0, width]);
+
+	var y = d3.scale.ordinal()
+    	.rangeRoundBands([0, height], .2);
+
+	var xAxis = d3.svg.axis()
+	    .scale(x)
+	    .orient("top");	//hmmm why isn't it at the top?
+
+    /*g is a grouping mechanism for svg*/
+	svg.append("g")
+	      .attr("class", "x axis")
+	      .attr("transform", "translate(0," + height + ")")
+	      .call(xAxis);
+
+
+
+	d3.json("{{ url_for('static', filename='data/saln.json') }}", function(error, saln) {
+		y.domain(saln.Reps.map(function(d) { return d['Representative']; }));
+
+
+		svg.selectAll('.rect')
+			.data(saln.Reps)
+		.enter().append("rect")
+			.attr("class", "rect")
+			.attr("y", function(d) {return y(d['Representative']); })
+			.attr("height", y.rangeBand())
+			.attr("x", "0px")
+			.attr("width", function(d) { return x(d['Real Properties']); })
+			.style("fill", "#FBB917");
+
+		/*tooltip hover*/
+		var tooltips = svg.selectAll(".rect")
+	     .on("mouseover", function(d,i) {
+	         d3.select(".tooltip")
+	             .style("top", y(d['Representative']) +"px")
+	             .style("left", width/2 + "px")
+	             .html(d['Representative'] +"m <br>" + d3.format(",")(d['Real Properties']) + " in Real Estate")
+	             .style("display","inline");
+	     })
+	     .on("mouseout", function(d,i){
+	         d3.select(".tooltip")
+	             .style("display","none");
+	     });
+
+
+	});
+
+</script>
+
+
+{% endblock %}
