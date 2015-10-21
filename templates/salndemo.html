@@ -7,15 +7,28 @@
 	font: 15px sans-serif;
 	font-color: black;
 	background: #FFB6C1;
-	opacity: 1.0;
+	opacity: 0.9;
 	padding: 10px ;
 	text-align: left;
 	display: none;
 	position: absolute;
+	border: solid 1px black;
+}
+
+.rect {
+	/*fill: #FBB917; */
 }
 
 .rect:hover {
-	fill: blue;
+	fill: red;
+}
+
+.rect text {
+	fill: black;
+}
+
+.text {
+	font: 8px Arial sans-serif;
 }
 
 </style>
@@ -25,7 +38,36 @@
 
 <h2>Real Assets, Personal Properties, Liabilities</h2>
 <br>
-<p> Congressional SALNs are part of our public record. Let's see which lawmakers have wealth in properties and cash. </p>
+<p> Congressional SALNs are part of our public record. Let's explore how much declared wealth our legislators have. Hover over the bars or names to see details. Play with the charting options below.</p>
+
+Interesting questions to ask yourself as you play with the data: 
+<ul>
+	<li> Does the legislator with the highest liabilities have the lowest net worth?
+	<li> Which legislators have the most real estate wealth? 
+	<li> Why is there such a dramatic difference in declared wealth between the richest and the poorest legislators? 
+</ul>
+
+<p>From a technical perspective, this d3 interactive combines tooltips and multiple transition types. Every transition is specifically defined to a degree you can't get from an out-of-the-box solution like highcharts.js. It's also correspondingly more work.</p>
+
+<br>
+
+<h4>Click these buttons to sort congress by declaration type:</h4>
+<div class="btn-group">
+	<button type="button" class="btn btn-default" id="networth">Net Worth</button>
+  <button type="button" class="btn btn-default" id="real">Real Assets</button>
+  <button type="button" class="btn btn-default" id="personal">Personal Assets</button>
+  <button type="button" class="btn btn-default" id="liabilities"> Liabilities</button>
+</div>
+
+<br><br> 
+<h4>Click these buttons to show bars by:</h4>
+<div class="btn-group">
+	<button type="button" class="btn btn-default" id="bnet">Net Worth</button>
+  <button type="button" class="btn btn-default" id="breal">Real Assets</button>
+  <button type="button" class="btn btn-default" id="bpersonal">Personal Assets</button>
+  <button type="button" class="btn btn-default" id="bliabilities"> Liabilities</button>
+</div>
+
 
 <div class = "frame">
     <div class = "tooltip"></div>
@@ -48,9 +90,9 @@
 <script>
 	
 /*setting up svg*/
-	var margin = {top: 20, right: 20, bottom: 30, left: 100},
+	var margin = {top: 20, right: 20, bottom: 30, left: 150},
 	    width = 960 - margin.left - margin.right,
-	    height = 1500 - margin.top - margin.bottom;
+	    height = 4000 - margin.top - margin.bottom;
 
 	var svg = d3.select(".frame").append("svg")
 	    .attr("width", width + margin.left + margin.right)
@@ -59,7 +101,7 @@
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	var x = d3.scale.linear()
-		.domain([0, 1000000000])
+		.domain([0, 2000000000]) /* d3.max(saln) sana */ 
 	    .range([0, width]);
 
 	var y = d3.scale.ordinal()
@@ -67,44 +109,258 @@
 
 	var xAxis = d3.svg.axis()
 	    .scale(x)
-	    .orient("top");	//hmmm why isn't it at the top?
+	    .tickFormat(d3.format("s"))
+	    .tickFormat(function(d) { return d3.format("s")(d).replace('G', 'B'); }) /* really terrible hack to replace G with billion */
+	    .orient("top");
+
+	// var yAxis = d3.svg.axis()
+	// 		.scale(y)
+	// 		.orient("left");
 
     /*g is a grouping mechanism for svg*/
 	svg.append("g")
 	      .attr("class", "x axis")
-	      .attr("transform", "translate(0," + height + ")")
+	      /* this line would move x axis all the way to bottom
+	      .attr("transform", "translate(0," + height + ")") */ 
 	      .call(xAxis);
 
-
+	// svg.append("g")
+	// 		.attr("class", "y axis")
+	// 		.call(yAxis); 
 
 	d3.json("{{ url_for('static', filename='data/saln.json') }}", function(error, saln) {
+
 		y.domain(saln.Reps.map(function(d) { return d['Representative']; }));
 
+		var real_bar = svg.selectAll('.rect')
+			.data(saln.Reps); 
 
-		svg.selectAll('.rect')
-			.data(saln.Reps)
-		.enter().append("rect")
+		real_bar.enter().append("rect")
 			.attr("class", "rect")
-			.attr("y", function(d) {return y(d['Representative']); })
+			.attr("y", function(d) {return y(d['Representative']); }) /* why is this returning an offset of about 140px? */
 			.attr("height", y.rangeBand())
 			.attr("x", "0px")
-			.attr("width", function(d) { return x(d['Real Properties']); })
-			.style("fill", "#FBB917");
+			.attr("width", "0")
+			.attr("fill", "#FBB917"); 
+
+		real_bar.transition()
+			.delay(100)
+			.duration(1000)
+			.attr("width", function(d) { return x(d['Net Worth']); });
+
+		var text = svg.selectAll('.text')
+			.data(saln.Reps);
+
+		text.enter().append("text")
+			.attr("class", "text")
+			.attr("y", function(d) {return y(d['Representative']); })
+			.attr("height", y.rangeBand())
+			.attr("x", "-150")
+			.attr("dy", "1em")
+			.text(function(d) {return d['Representative'];} );
 
 		/*tooltip hover*/
 		var tooltips = svg.selectAll(".rect")
 	     .on("mouseover", function(d,i) {
 	         d3.select(".tooltip")
 	             .style("top", y(d['Representative']) +"px")
-	             .style("left", width/2 + "px")
-	             .html(d['Representative'] +"m <br>" + d3.format(",")(d['Real Properties']) + " in Real Estate")
+	             .style("left", width*.75 + "px")
+	             .html(d['Representative'] +" owns <br><br>" + d3.format(",")(d['Real Properties']) + " in Real Estate," + "<br>" 
+	             	+ d3.format(",")(d['Personal Properties']) + " in Cash and Investments, <br><br> for a total of <br>" 
+	             	+ d3.format(",")(d['Total Assets']) + " in Total Assets"
+	             	+ "<br><br> They also owes " + d3.format(",")(d['Liabilities']) + " in debts and liabilities."
+	             	+ "<br><br> Their official net worth is PHP" + d3.format(",")(d['Net Worth']))
 	             .style("display","inline");
 	     })
-	     .on("mouseout", function(d,i){
+	     .on("mouseout", function(d){
 	         d3.select(".tooltip")
 	             .style("display","none");
 	     });
 
+	     /* tooltop appears even when hovering over text labels */ 
+	     var tooltipText = svg.selectAll(".text")
+	     .on("mouseover", function(d,i) {
+	     	d3.select(this)
+	     		.attr("text-decoration", "underline");
+	        d3.select(".tooltip")
+	             .style("top", y(d['Representative']) +"px")
+	             .style("left", width*.75 + "px")
+	             .html(d['Representative'] +" owns <br><br>" + d3.format(",")(d['Real Properties']) + " in Real Estate," + "<br>" 
+	             	+ d3.format(",")(d['Personal Properties']) + " in Cash and Investments, <br><br> for a total of <br>" 
+	             	+ d3.format(",")(d['Total Assets']) + " in Total Assets"
+	             	+ "<br><br> They also owes " + d3.format(",")(d['Liabilities']) + " in debts and liabilities.")
+	             .style("display","inline");
+	     })
+	     .on("mouseout", function(d){
+	        d3.select(".tooltip")
+	            .style("display","none");
+	        text.attr("text-decoration", "none");
+
+	     });
+
+
+	    d3.select("#real").on("click", function() {
+	     	/* staggered delay */
+	     	var delay = function(d,i) { return i*10; };
+
+	     	var realdomain = saln.Reps.sort(function(a,b) {
+				return b['Real Properties'] - a['Real Properties'];})
+	     		.map(function(d){return d['Representative']; });
+
+	     	y.domain(realdomain);
+
+	     	console.log("real clicked");
+	     	console.log(realdomain);
+
+	     	/* to sort by least to most, use sortMost2Least.reverse() */
+
+	     	/* rebinds new data */
+	     	real_bar.transition()
+	  			.duration(750)
+		      	.delay(delay)
+		      	.attr("transform", function(d, i) { 
+		      		var delta_y = -this.y.baseVal.value + y(d['Representative']); 
+		      		return "translate(0," + delta_y + ")"; });
+
+		    text.transition()
+		    	.duration(750)
+		    	.delay(delay)
+		    	.attr("y", function(d, i) { 
+		    		return +y(d['Representative']); });
+		      });
+
+	    d3.select("#networth").on("click", function() {
+	     	/* staggered delay */
+	     	var delay = function(d,i) { return i*10; };
+
+	     	var networthdomain = saln.Reps.sort(function(a,b) {
+				return b['Net Worth'] - a['Net Worth'];})
+	     		.map(function(d){return d['Representative']; });
+
+	     	y.domain(networthdomain);
+
+	     	console.log("Net Worth Clicked");
+	     	console.log(networthdomain);
+
+
+	     	/* rebinds new data */
+	     	real_bar.transition()
+	  			.duration(750)
+		      	.delay(delay)
+		      	.attr("transform", function(d, i) { 
+		      		var delta_y = -this.y.baseVal.value + y(d['Representative']); 
+		      		return "translate(0," + delta_y + ")"; });
+
+		    text.transition()
+		    	.duration(750)
+		    	.delay(delay)
+		    	.attr("y", function(d, i) { 
+		    		return +y(d['Representative']); });
+		      });
+
+
+	    d3.select("#personal").on("click", function() {
+	     	/* staggered delay */
+	     	var delay = function(d,i) { return i*10; };
+
+	     	var personaldomain = saln.Reps.sort(function(a,b) {
+				return b['Personal Properties'] - a['Personal Properties'];})
+	     		.map(function(d){return d['Representative']; });
+
+	     	y.domain(personaldomain);
+
+	     	console.log("Personal Clicked");
+	     	console.log(personaldomain);
+
+	     	/* rebinds new data */
+	     	real_bar.transition()
+	  			.duration(750)
+		      	.delay(delay)
+		      	.attr("transform", function(d, i) { 
+		      		var delta_y = -this.y.baseVal.value + y(d['Representative']); 
+		      		return "translate(0," + delta_y + ")"; });
+
+		   	text.transition()
+		    	.duration(750)
+		    	.delay(delay)
+		    	.attr("y", function(d, i) { 
+		    		return +y(d['Representative']); });
+
+		      });
+
+	    d3.select("#liabilities").on("click", function() {
+	     	/* staggered delay */
+	     	var delay = function(d,i) { return i*10; };
+
+	     	var liabilitiesdomain = saln.Reps.sort(function(a,b) {
+				return b['Liabilities'] - a['Liabilities'];})
+	     		.map(function(d){return d['Representative']; });
+
+	     	y.domain(liabilitiesdomain);
+
+	     	// console.log("Liabilities Clicked");
+	     	// console.log(liabilitiesdomain);
+
+	     	/* rebinds new data */
+	     	real_bar.transition()
+	  			.duration(750)
+		      	.delay(delay)
+		      	.attr("transform", function(d, i) { 
+		      		var delta_y = -this.y.baseVal.value + y(d['Representative']); 
+		      		return "translate(0," + delta_y + ")"; });
+
+		    text.transition()
+		    	.duration(750)
+		    	.delay(delay)
+		    	.attr("y", function(d, i) { 
+		    		return +y(d['Representative']); });
+
+		});
+
+		d3.select("#bpersonal").on("click", function() {
+	     	console.log("Personal Bars Clicks");
+
+	     	/* rebinds new data */
+	     	real_bar.transition()
+	  			.duration(500)
+		      	.attr("width", function(d) { return x(d['Personal Properties']);})
+		      	.attr("fill", "#1485CC");
+
+		});
+
+		d3.select("#bnet").on("click", function() {
+	     	console.log("Net Bars Clicks");
+
+	     	/* rebinds new data */
+	     	real_bar.transition()
+	  			.duration(500)
+		      	.attr("width", function(d) { return x(d['Net Worth']);})
+		      	.attr("fill", "#FBB917");
+		});
+
+		d3.select("#bliabilities").on("click", function() {
+
+	     	console.log("Liabilities Bars Clicks");
+
+	     	/* rebinds new data */
+	     	real_bar.transition()
+	  			.duration(500)
+		      	.attr("width", function(d) { return x(d['Liabilities']);})
+		      	.attr("fill", "#FF0000");
+		});
+
+		d3.select("#breal").on("click", function() {
+
+	     	console.log("Real Bars Clicks");
+
+	     	/* rebinds new data */
+	     	real_bar.transition()
+	     		.duration(500)
+		      	.attr("width", function(d) { return x(d['Real Properties']);})
+		      	.attr("fill", "#347C17");
+		});
+
+	    	
 
 	});
 
